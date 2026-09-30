@@ -1,36 +1,36 @@
 {
-  "version": "1.1.1",
-  "published": "2026-09-30T14:52:19Z",
-  "notes": "支持 SubAgent 和 Workflow，修复了Windows下 深色浅色切换没有同步控制按钮的bug\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.1.1",
+  "version": "1.1.2",
+  "published": "2026-09-30T15:50:28Z",
+  "notes": "自动检查更新，支持Mirror\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.1.2",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.1/SkidSense-1.1.1-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.2/SkidSense-1.1.2-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.1/SkidSense-1.1.1-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.2/SkidSense-1.1.2-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.1/SkidSense-1.1.1-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.2/SkidSense-1.1.2-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.1/SkidSense-1.1.1-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.2/SkidSense-1.1.2-linux-x86_64.AppImage"
     }
   ]
 }
