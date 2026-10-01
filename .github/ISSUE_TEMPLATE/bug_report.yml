@@ -1,0 +1,110 @@
+name: 问题反馈
+description: 报告 SkidSense 的 bug。请把系统、版本、复现步骤写清楚，否则很难定位。
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！提交前请先在 [已有 Issue](https://github.com/LoserLiunian/SkidSense-Release/issues?q=is%3Aissue) 里搜一下，同一个问题请在原 Issue 下补充。
+
+        下面每一项都会用来复现问题。信息越具体，修得越快。
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: 操作系统
+      description: 和你下载的安装包对应。
+      options:
+        - MacOS-arm64（Apple 芯片，M 系列）
+        - MacOS-x64（Intel 芯片）
+        - Win-x64
+        - Linux-x64
+    validations:
+      required: true
+
+  - type: input
+    id: os-version
+    attributes:
+      label: 系统详细版本
+      description: |
+        具体到版本号。
+        - Windows：按 Win+R 输入 `winver`
+        - macOS：左上角  →「关于本机」
+        - Linux：终端执行 `cat /etc/os-release`
+      placeholder: 例如 Windows 11 25H2 / macOS 26.0 / Ubuntu 26.04
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: SkidSense 版本
+      description: 侧栏左下角的版本号，或「设置 → 系统设置 → 应用更新 → 当前版本」。
+      placeholder: 例如 1.1.2
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 一两句话说明是什么问题、出现在哪里。
+      placeholder: 在 Windows 上给 Claude 发消息时启动失败，会话里直接报错。
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 从打开应用开始，一步一步写。别人照着做应该能看到同样的问题。涉及智能体（claude、codex 等）的，请写明它是怎么装的（npm / pnpm / Homebrew / 官方安装脚本）以及它的版本。
+      placeholder: |
+        1. 用 `npm i -g @anthropic-ai/claude-code` 安装 Claude Code 2.1.0
+        2. 打开 SkidSense，新建会话，选择 Claude
+        3. 输入任意内容并发送
+        4. 看到报错 ……
+    validations:
+      required: true
+
+  - type: textarea
+    id: result
+    attributes:
+      label: 复现结果
+      description: 按上面的步骤操作后，实际看到了什么，你原本期望看到什么。有报错的话请原样贴出完整文字，不要只截一部分。
+      placeholder: |
+        实际：会话里显示「无法启动 claude：spawn EINVAL」
+        期望：正常开始回复
+    validations:
+      required: true
+
+  - type: upload
+    id: screenshots
+    attributes:
+      label: 问题截图
+      description: 截图或录屏，能看清问题出现的位置和文字。有日志文件也可以一起传。
+    validations:
+      required: true
+      accept: ".png,.jpg,.jpeg,.gif,.webp,.mp4,.mov,.webm,.log,.txt,.zip"
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: 补充信息
+      description: 选填。比如是升级后才出现的、只在某个工作区出现、用了代理等。
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已搜索过已有 Issue，没有重复
+          required: true
+        - label: 我已更新到最新版本，问题仍然存在
+          required: true
+        - label: 我按上面的复现步骤重新操作过一遍，问题确实能复现
+          required: true
+        - label: 系统、版本、问题描述和截图都已如实填写
+          required: true
