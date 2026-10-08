@@ -1,36 +1,36 @@
 {
-  "version": "1.1.4",
-  "published": "2026-10-01T14:41:01Z",
-  "notes": "修复了一些Bug，优化了一些性能\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.1.4",
+  "version": "1.1.5",
+  "published": "2026-10-08T15:00:54Z",
+  "notes": "# 新增  ### 对话 - **系统通知**：窗口不在前台时，回合完成、失败、没跑完或在等你审批，都会弹出系统通知，点一下直接打开那个对话；问题答完后通知自动撤下。可在「设置 → 回合通知」关闭。 - **置顶与归档**：侧栏菜单可以置顶、归档会话。置顶的排在最前、不会被折叠；归档的收进各工作区的「已归档」里，可随时取消归档，刚归档时也可以直接撤销。归档的会话不会出现在手机上。 - **导出对话**：侧栏菜单新增「复制为 Markdown」「导出 Markdown…」「导出 JSON…」。导出只包含文字、每轮的结果、附件名和用到的工具名称，不带工具的输入输出；分享前仍建议检查一遍。 - **复制整条回复**：回复下方「从这里分支」旁新增「复制回复」，复制的是智能体写的原始 Markdown。 - **会话内查找（⌘F / Ctrl+F）**：在当前对话里查找，高亮全部匹配并可逐个跳转，很早的轮次和内层滚动框里的内容也能跳到；输入法组字时不会触发搜索。焦点在编辑器或终端里时，⌘F 仍由它们处理。 - **退出前提醒**：还有回合、终端、后台命令或 SSH 在运行时，退出或重启前会先问一句，并列出会被停掉的工作。可在「设置 → 退出前提醒」关闭。  ### 富文本 - **代码高亮**：回复里的代码块按语言着色，与                                                                                                                     Ran 2 shell commands  Batch B (code highlighting, Mermaid diagrams, KaTeX maths) is done, and the review loop has closed: the last round found nothing high or medium, and the low-severity items are fixed. check:ui, check:ui:protected, verify:sessions, verify:rich-text and smoke all pass on the final state.                                                            delivers - Code highlighting: uses CodeMirror's own grammars, sharing one colour palette with the doc tile's editor. A block is highlighted once its turn ends, and a fence names its language exactly (text is no longer read as LaTeX). - Mermaid diagrams: done the parent project's way, at your choice. Mermaid is loaded on first use and draws in the main window once the turn ends; a failure shows the source and the reason. Two things differ from the parent:   - the result is shown only as an <img>, so a hole in mermaid's sanitizer can't run code in this window, which can start CLIs and read and write files;   - a diagram's own %%{init}%% and front matter are stripped. Nested YAML in front matter once crashed the renderer. - KaTeX maths: $…$ is read the parent's way, with remark-math single dollars, at your choice. KaTeX keeps its limits: over 3,000 characters, defines macros, or lays out taller than 50 em, and the formula stays as written. Height is measured where it actually lays out.  What you've accepted - An especially heavy diagram freezes the app for a few seconds, the same as in the parent. Ordinary diagrams take well under a second. - Any two $ in the same paragraph pair up, prices included: in 「价格是 $5 和 $10」, \"5 和 \" becomes a formula.                                                                                                                   CLAUDE.md records both decisions and says notost gate or a dollar-sign tokenizer withoutait the moment it takes. - A pane stuck on a finished turn: after switching away and back, a pane could keep showing 停止 for good. Live-turn reads now carry a sequence number, and a finished turn is never shown twice. - Caret placement: dictation and the menus could place the input box's caret in the wrong text. - Release obfuscation guard: the release build now refuses to ship if any of our own code ends up in an unobfuscated vendor chunk. - Release workflow: no longer produces Actions artifacts, so it doesn't eat into your storage; the update manifests now ride on the draft release instead (f4a7fff).  Commits: everything up to b70ee7e is already on the remote. I didn't push it, so either you or another session did. Only 0505767 remains unpushed.  Heads-up: another session is editing five files in this repository at the same time (backend.ts and remote/index.ts plus the related docs and tests: login refresh and remote relay). I haven't touched or committed them. Please confirm they're yours.  Next is batch C, by plan: C2 (message queueing, cutting in, recalling), then C1 (edit and resend, rerun). Shall I start? I can also turn this report into a shae.  ✻ Cogitated for 41s · done 22:42  ❯ 现在我要发一个版本，请你给我写一个更新说明，使用Marndown  First I need to know what's new since the last release. Finding the last release commit and the commit history after it:    Ran 2 shell commands  To keep the notes accurate, I'll skim the bodies of the main feature commits:    Ran 2 shell commands  Checking the settings labels for notifications and the quit reminder, so the notes name the actual settings:    Searched for 1 pattern  ode fix (d529a8f) had no visible effect for users (Claude ran in the same mode either way), so it stays out of the notes. Here are the release notes for everything after 1.1.5-beta.3, ready to paste into the workflow's notes field:  ## 新增  ### 对话 - **系统通知**：窗口不在前台时，回合完成、失败、没跑完或在等你审批，都会弹出系统通知，点一下直接打开那个对话；问题答完后通知自动撤下。可在「设置 → 回合通知」关闭。 - **置顶与归档**：侧栏菜单可以置顶、归档会话。置顶的排在最前、不会被折叠；归档的收进各工作区的「已归档」里，可随时取消归档，刚归档时也可以直接撤销。归档的会话不会出现在手机上。 - **导出对话**：侧栏菜单新增「复制为 Markdown」「导出 Markdown…」「导出 JSON…」。导出只包含文字、每轮的结果、附件名和用到的工具名称，不带工具的输入输出；分享前仍建议检查一遍。 - **复制整条回复**：回复下方「从这里分支」旁新增「复制回复」，复制的是智能体写的原始 Markdown。 - **会话内查找（⌘F / Ctrl+F）**：在当前对话里查找，高亮全部匹配并可逐个跳转，很早的轮次和内层滚动框里的内容也能跳到；输入法组字时不会触发搜索。焦点在编辑器或终端里时，⌘F 仍由它们处理。 - **退出前提醒**：还有回合、终端、后台命令或 SSH 在运行时，退出或重启前会先问一句，并列出会被停掉的工作。可在「设置 → 退出前提醒」关闭。  ### 富文本 - **代码高亮**：回复里的代码块按语言着色，与文件编辑器使用同一套配色。 - **Mermaid 图表**：```mermaid 代码块在回合结回源码、复制源码；画不出来时显示源码和原因。 - **数学公式**：`$…$`、`$$…$$` 和 ```math 代码块用 KaTeX 排版。  ## 改进 - **引导**：不支持回合中途追加输入的智能体（kimi、qwen、gemini、grok、antigravity、zcode）不再显示「引导」，避免文字被悄悄吞掉；引导没送到时会如实提示，并把文字放回输入框（或提示复制）。 - **Codex**：回合刚开始、还没拿到回合 id 时发出的引导会排队送达，不再丢失。 - **Claude**：判断回合何时结束更准确，中途引导的那一轮不会被提前截断；Claude 自带的 `/goal` 不再被同名技能顶替。 - **后台命令**：记在开启它的会话上，进程退出后不再显示为运行中；侧栏的运行状态也更准确，不在任何窗格里的会话同样如此。 - 复制失败时会提示「复制失败」，不再显示复制成功。  ## 修复 - 由手机等发起的回合开始时，窗格里的上一轮不再从屏幕上消失。 - 切走再切回窗格后，已经结束的回合不再一直显示「停止」；同一轮也不会显示两遍。 - 刚停止或刚结束就发送、分支或切换智能体时，不再提示「该会话已有回合在运行」，切换智能体也不会漏掉最后一轮。 - 听写或从菜单插入内容后，光标不再落到别的文 - 退出登录后关闭登录窗口，不再留下没有窗口的进程；点通知总能打开对应的对话。 - 取消归档的对话会重新同步到手机；手机上的搜索结果不再被已归档的会话挤掉。 - 同一会话的记录同时写入时不再丢失内容；置顶  ## 须知 - 特别复杂的 Mermaid 图（例如几百条关系的类图）绘制时，界面可能会卡几秒。 - 同一段里的两个 `$` 会被识别为一个公式，价格也不例外（例如「$5 和 $10」）。需要原样显示 `$` 时，请写成 `\\$`，或放进代码样式里。\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.1.5",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.4/SkidSense-1.1.4-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.5/SkidSense-1.1.5-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.4/SkidSense-1.1.4-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.5/SkidSense-1.1.5-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.4/SkidSense-1.1.4-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.5/SkidSense-1.1.5-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.4/SkidSense-1.1.4-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.1.5/SkidSense-1.1.5-linux-x86_64.AppImage"
     }
   ]
 }
