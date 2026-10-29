@@ -1,0 +1,455 @@
+name: publish-beta
+
+# A beta release, started by hand.
+#
+# Identical to publish-release except in what it publishes: the version must
+# carry a pre-release suffix (`1.1.0-beta.1`), the release is created as a
+# pre-release, and it writes update.beta.json rather than update.release.json.
+#
+# Its releases are what the beta switch in settings reads. electron-updater is
+# told `allowPrerelease` and reads the manifest from the tag, so a beta does
+# not reach anyone who has not asked for one — and it is never marked
+# `--latest`, so it does not become the default download on the release page.
+#
+# See publish-release.yml for why this builds one target per runner, why the
+# version is an input rather than a tag, and what running in this public
+# repository changes: the source through SOURCE_DEPLOY_KEY, kept only by
+# prepare, and the build's output sealed with BUILD_LOG_KEY instead of shown.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号，必须带预发布后缀（例如 1.1.0-beta.1）'
+        required: true
+        type: string
+      notes:
+        description: '更新说明，支持多行 Markdown'
+        required: true
+        type: string
+
+env:
+  RELEASE_REPO: LoserLiunian/SkidSense-Release
+  SOURCE_REPO: LoserLiunian/SkidSense
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      # The one checkout that keeps the deploy key: this job pushes.
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SOURCE_REPO }}
+          ssh-key: ${{ secrets.SOURCE_DEPLOY_KEY }}
+
+      - name: Check the version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          version="$(printf '%s' "$INPUT_VERSION" | tr -d '[:space:]' | sed 's/^v//')"
+          # A beta without a suffix is a stable release wearing the wrong
+          # workflow's name — publish-release is the one that may hand a
+          # version to every installed copy.
+          case "$version" in
+            *-*) ;;
+            *) echo "beta 的版本号必须带后缀（例如 1.1.0-beta.1），收到的是「$version」；正式版请用 publish-release"; exit 1 ;;
+          esac
+          printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+-[0-9A-Za-z.-]+$' || {
+            echo "版本号必须形如 1.1.0-beta.1，收到的是「$version」"; exit 1
+          }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "版本：$version（预发布）"
+
+      - name: Write the version into package.json
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          node -e '
+            const fs = require("node:fs")
+            const file = "package.json"
+            const pkg = JSON.parse(fs.readFileSync(file, "utf8"))
+            pkg.version = process.env.VERSION
+            fs.writeFileSync(file, JSON.stringify(pkg, null, 2) + "\n")
+          '
+          git diff --stat
+
+      - name: Commit, tag and push
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          # A rerun of the same version has nothing to commit — see
+          # publish-release.yml.
+          if git diff --cached --quiet; then
+            echo "package.json 已经是 $VERSION，无需提交"
+          else
+            git commit -m "release: $VERSION (beta)"
+          fi
+
+          # See publish-release.yml: re-runnable, and the refspec names its
+          # destination because `actions/checkout` leaves a detached HEAD.
+          # Asked of the remote, not of the local clone: `actions/checkout`
+          # fetches with `--no-tags`, so a tag that already exists on origin is
+          # invisible here, and a local check would let `git tag` re-create it
+          # and the push be rejected.
+          remote_tag="$(git ls-remote --tags origin "refs/tags/v$VERSION" | cut -f1)"
+
+          # The tag not moving is what makes a version immutable, and it must
+          # hold only once that version has actually shipped: two builds of
+          # different code under one version is how an installed copy ends up
+          # with something nobody can reproduce. Retrying a build that failed
+          # is the ordinary case, though, and its tag points at the bot's
+          # earlier commit — so the test is whether anything was published,
+          # not whether the tag moved.
+          if [ -z "$remote_tag" ]; then
+            git tag "v$VERSION"
+          elif [ "$remote_tag" = "$(git rev-parse HEAD)" ]; then
+            echo "tag v$VERSION 已存在于远端且就在这个提交上，沿用"
+          elif [ "$(gh release view "v$VERSION" -R "$RELEASE_REPO" --json assets -q '.assets | length' 2>/dev/null || echo 0)" = "0" ]; then
+            # Nothing was ever uploaded: the earlier attempt died before its
+            # artifacts landed. Move the tag to this commit and retry.
+            echo "tag v$VERSION 指向别的提交，但没有发布过任何产物，改指到当前提交"
+            git tag -f "v$VERSION"
+            git push --force origin "refs/tags/v$VERSION"
+          else
+            echo "tag v$VERSION 已存在，且那个版本已经发布过产物，换一个版本号"; exit 1
+          fi
+
+          git push origin "HEAD:main" "refs/tags/v$VERSION"
+
+      - name: Create the pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          printf '%s\n' "$NOTES" > notes.md
+          # A re-run finds the release its failed attempt left behind — and it
+          # may already be published. Putting it back to draft is what lets
+          # electron-builder upload into it: its provider reuses a draft and
+          # refuses a published release while its own releaseType is `draft`.
+          # It is published again at the end.
+          if gh release view "v$VERSION" -R "$RELEASE_REPO" >/dev/null 2>&1; then
+            echo "release v$VERSION 已存在，更新说明并回到 draft"
+            gh release edit "v$VERSION" -R "$RELEASE_REPO" --notes-file notes.md --draft
+            exit 0
+          fi
+          # A draft, and marked pre-release from the start — see
+          # publish-release.yml for why electron-builder needs the draft.
+          gh release create "v$VERSION" -R "$RELEASE_REPO" --draft --prerelease \
+            --title "SkidSense $VERSION（beta）" --notes-file notes.md
+
+  build:
+    name: ${{ matrix.name }}
+    needs: prepare
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    env:
+      BUILD_LOG: build-output.log
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: mac-arm64
+            os: macos-latest
+          - name: mac-x64
+            os: macos-15-intel
+          - name: win-x64
+            os: windows-latest
+          # No win-arm64 — see publish-release.yml for why the target was
+          # dropped rather than kept as a job allowed to fail.
+          - name: linux-x64
+            os: ubuntu-latest
+
+    steps:
+      # The key does not stay for `npm ci` — see publish-release.yml.
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SOURCE_REPO }}
+          ssh-key: ${{ secrets.SOURCE_DEPLOY_KEY }}
+          persist-credentials: false
+          ref: main
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Electron binary
+        run: node node_modules/electron/install.js
+
+      - name: Build and package
+        shell: bash
+        run: |
+          if [ "${{ runner.os }}" = "Linux" ]; then
+            sudo apt-get update && sudo apt-get install -y xvfb
+            xvfb-run -a npm run dist >> "$BUILD_LOG" 2>&1
+          else
+            npm run dist >> "$BUILD_LOG" 2>&1
+          fi
+          echo "构建完成，输出 $(wc -l < "$BUILD_LOG") 行，不在公开日志里"
+
+      - name: Verify architecture
+        shell: bash
+        run: |
+          expected="${{ matrix.name }}"
+          got="$(node -e "console.log(require('./dist/bytecode.json').arch)")"
+          case "$expected" in
+            *-arm64) want=arm64 ;;
+            *-x64)   want=x64 ;;
+          esac
+          echo "字节码架构：$got，期望：$want"
+          [ "$got" = "$want" ] || { echo "架构不匹配，产物会在启动时崩溃"; exit 1; }
+
+      - name: Publish to GitHub Releases
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # `prepare` always made the release, and a draft is reused whatever
+          # these say. They matter when a failed build is re-run after
+          # `publish` already put the release out: with releaseType `draft`
+          # electron-builder skips a published release — and exits 0, having
+          # uploaded nothing — and it refuses one published over two hours ago.
+          EP_PRE_RELEASE: 'true'
+          EP_GH_IGNORE_TIME: 'true'
+        run: |
+          name="${{ matrix.name }}"
+          npx electron-builder --"${name%%-*}" --"${name##*-}" --publish always >> "$BUILD_LOG" 2>&1
+          echo "已上传 $name 的安装包"
+
+      # This job's update manifests, for `publish` to merge: the arm64 and x64
+      # jobs of one platform each write a latest*.yml of the same name, and
+      # whichever lands second overwrites the other. They travel on the draft
+      # release itself, not as an Actions artifact: copies of what
+      # electron-builder uploaded under the real names (the last job's
+      # winning), named for this run and this job, so a later run of the same
+      # version never merges this one's. `publish` takes them off once every
+      # build of the run has succeeded.
+      - name: Hand the update manifests to publish
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          shopt -s nullglob
+          manifests=(release/latest*.yml)
+          [ ${#manifests[@]} -gt 0 ] || { echo "electron-builder 没有写出更新清单（release/latest*.yml）"; exit 1; }
+          mkdir -p handoff
+          for file in "${manifests[@]}"; do
+            cp "$file" "handoff/manifest-${{ github.run_id }}-${{ matrix.name }}--$(basename "$file")"
+          done
+          gh release upload "v$VERSION" handoff/* -R "$RELEASE_REPO" --clobber
+
+      # See publish-release.yml.
+      - name: Seal the build output onto the release
+        if: ${{ failure() }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUILD_LOG_KEY: ${{ secrets.BUILD_LOG_KEY }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          [ -s "$BUILD_LOG" ] || { echo "失败在构建之前，原因就在上面的日志里"; exit 0; }
+          sealed="buildlog-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.name }}.sealed"
+          node scripts/build-log.mjs seal "$BUILD_LOG" "$sealed"
+          gh release upload "v$VERSION" "$sealed" -R "$RELEASE_REPO" --clobber
+          echo "构建输出已加密，挂在 v$VERSION 上：$sealed"
+          echo "在源码仓库里读：node scripts/build-log.mjs read v$VERSION"
+
+  publish:
+    # `needs` lists every job whose outputs are read, not only the direct
+    # dependency: `needs.prepare.outputs.version` resolves to an empty string
+    # unless `prepare` is named here, and an empty version writes a release
+    # nothing can find.
+    needs: [prepare, build]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SOURCE_REPO }}
+          ssh-key: ${{ secrets.SOURCE_DEPLOY_KEY }}
+          persist-credentials: false
+          ref: main
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --ignore-scripts
+
+      # What each build job left on the draft release, one directory per job
+      # as merge-update-manifests reads them. Only this run's: a manifest an
+      # earlier run of the same version left behind describes files that run
+      # uploaded, not this one's.
+      - name: Collect the update manifests
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          prefix="manifest-${{ github.run_id }}-"
+          gh release download "v$VERSION" -R "$RELEASE_REPO" -p "$prefix*" -D handoff || {
+            echo "这次运行没有任何构建任务交来更新清单"; exit 1
+          }
+          for file in handoff/*; do
+            rest="$(basename "$file")"; rest="${rest#"$prefix"}"
+            job="${rest%%--*}"
+            mkdir -p "manifests/$job"
+            mv "$file" "manifests/$job/${rest#*--}"
+          done
+          find manifests -type f | sort
+
+      - name: Merge manifests and write the index
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          node scripts/merge-update-manifests.mjs merged manifests/*
+          printf '%s\n' "$NOTES" > notes.md
+          node scripts/release-index.mjs update.beta.json \
+            --version "$VERSION" --notes-file notes.md merged
+          # A platform whose job failed is absent from the index rather than
+          # linked to nothing. That is reported, not swallowed: a build that
+          # silently stopped producing a target is exactly the thing nobody
+          # notices until a user cannot install.
+          node -e '
+            const fs = require("node:fs")
+            const index = JSON.parse(fs.readFileSync("update.beta.json", "utf8"))
+            const have = new Set(index.downloads.map((d) => d.platform))
+            const want = ["mac-arm64", "mac-x64", "win-x64", "linux-x64"]
+            const missing = want.filter((key) => !have.has(key))
+            if (missing.length > 0) {
+              console.log("::warning::${VERSION} 缺少这些平台：" + missing.join("、"))
+            }
+            console.log("索引包含：" + [...have].join("、"))
+          '
+
+      - name: Upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          # Every installer a manifest offers must be on the release before it
+          # is offered: a build that skipped its upload but handed in its
+          # manifest would send every updater of that platform to a 404.
+          assets="$(gh release view "v$VERSION" -R "$RELEASE_REPO" --json assets -q '.assets[].name')"
+          missing="$(ASSETS="$assets" node -e '
+            const fs = require("node:fs")
+            const yaml = require("js-yaml")
+            const assets = new Set(process.env.ASSETS.split("\n"))
+            for (const name of fs.readdirSync("merged")) {
+              for (const file of yaml.load(fs.readFileSync("merged/" + name, "utf8")).files ?? []) {
+                if (!assets.has(file.url)) console.log(name + " → " + file.url)
+              }
+            }
+          ')"
+          [ -z "$missing" ] || { echo "更新清单列了 release 上没有的文件："; echo "$missing"; exit 1; }
+          # `update.beta.json` is deliberately not in this list: it is
+          # committed to the repository below, so that the app can ask a fixed
+          # URL whether anything is newer. A copy here would be a second
+          # source of truth that can disagree with the first.
+          gh release upload "v$VERSION" merged/*.yml -R "$RELEASE_REPO" --clobber
+
+      # The index goes to the repository, not to the release, and it goes
+      # BEFORE the release becomes visible. That order is the whole safety
+      # property: if this step fails, the release stays a draft and nobody is
+      # ever offered a version the index does not yet describe. Committing
+      # first also means the two are never briefly out of step in the one
+      # direction that hurts — a client told "you are up to date" while a
+      # finished release sits waiting for it.
+      - name: Commit the index
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          # The contents API rather than a clone: one file, no history to
+          # preserve, and it makes a rerun naturally idempotent — the `sha` is
+          # what turns "create" into "update", and it is absent exactly when
+          # the file is not there yet.
+          sha="$(gh api "repos/$RELEASE_REPO/contents/update.beta.json?ref=main" -q .sha 2>/dev/null || true)"
+          gh api --method PUT "repos/$RELEASE_REPO/contents/update.beta.json" \
+            -f message="index: $VERSION" \
+            -f content="$(base64 -w0 update.beta.json)" \
+            -f branch=main \
+            ${sha:+-f sha="$sha"}
+          echo "已提交 update.beta.json（$VERSION）"
+
+      # `--prerelease` is what keeps a beta away from everyone who did not
+      # ask for one: GitHub does not pick a pre-release as "latest", and the
+      # updater only reads pre-releases when allowPrerelease is on. The flag
+      # is confirmed afterwards by reading it back rather than trusted.
+      - name: Publish the pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          # The pre-release flag was set when the draft was created and
+          # survives this; only the draft state changes here.
+          gh release edit "v$VERSION" -R "$RELEASE_REPO" --draft=false
+          # What the release actually is, read back from the API. A beta that
+          # quietly came out as a normal release would be handed to every
+          # installed copy, and nothing in the log would say so.
+          state="$(gh api "repos/$RELEASE_REPO/releases/tags/v$VERSION" -q '[.prerelease, .draft] | @tsv')"
+          echo "发布状态（prerelease, draft）：$state"
+          [ "$state" = "true	false" ] || { echo "beta 没有发布成预发布版本"; exit 1; }
+
+      - name: Confirm the feed is reachable
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          base="https://github.com/$RELEASE_REPO/releases/download/v$VERSION"
+          for file in latest-mac.yml latest.yml latest-linux.yml; do
+            code="$(curl -s -o /dev/null -w '%{http_code}' -L "$base/$file")"
+            if [ "$code" = "200" ]; then
+              echo "✓ $file"
+            else
+              echo "✗ $file：HTTP $code"
+              case "$file" in latest-mac.yml|latest-linux.yml) ;; *) exit 1 ;; esac
+            fi
+          done
+
+          # The index is not an asset — see publish-release.yml. What is worth
+          # confirming is that the committed copy describes *this* version.
+          index="https://raw.githubusercontent.com/$RELEASE_REPO/main/update.beta.json"
+          body="$(curl -s -L "$index")"
+          published="$(printf '%s' "$body" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{process.stdout.write(String(JSON.parse(s).version??""))}catch{process.stdout.write("")}})')"
+          if [ "$published" != "$VERSION" ]; then
+            echo "✗ 仓库里的索引说 $published，本应是 $VERSION"
+            echo "  $index"
+            exit 1
+          fi
+          echo "✓ 索引已是 $VERSION：$index"
+
+      # The hand-off manifests come off last, and only once every build of the
+      # run has succeeded: re-running a failed build re-runs this job too, and
+      # it must still find the other builds' manifests — with them gone it
+      # merged only the rebuilt platform and dropped the rest from the index.
+      # Likewise a publish job that failed before this point. Every run's go,
+      # an earlier attempt's included, and the sealed output of failed builds
+      # with them.
+      - name: Take the hand-off manifests off the release
+        if: ${{ needs.build.result == 'success' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          gh release view "v$VERSION" -R "$RELEASE_REPO" --json assets -q '.assets[].name' \
+            | { grep -E '^(manifest|buildlog)-' || true; } \
+            | while read -r name; do
+                gh release delete-asset "v$VERSION" "$name" -R "$RELEASE_REPO" --yes
+                echo "已移除 $name"
+              done
