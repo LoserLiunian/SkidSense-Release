@@ -1,0 +1,178 @@
+name: mobile-check
+
+# A check of the phone app (the source repository's mobile/), started by hand:
+# its tests on the JVM and the iOS simulator, an R8 release APK and an unsigned
+# IPA built the way the publish workflows will build them — and nothing
+# published. From the cut-over on the phone ships with the desktop and
+# publish-release.yml / publish-beta.yml grow these jobs; until then this is
+# how a source commit is checked on the runners a release uses.
+#
+# As in the publish workflows: the source is reached with SOURCE_DEPLOY_KEY,
+# never kept in git's config; this log is public, and a build's output quotes
+# the code it is about (Swift's errors print the line), so every build writes
+# to BUILD_LOG instead, and a job that fails leaves it on the run as an
+# artifact sealed with BUILD_LOG_KEY — in the source repository,
+# `node scripts/build-log.mjs open <file>` reads it. The APK and the IPA are
+# not uploaded: built from a commit no release names, they are measured and
+# dropped.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: '源码仓库的分支、标签或提交（默认 main）'
+        required: false
+        default: main
+        type: string
+
+env:
+  SOURCE_REPO: LoserLiunian/SkidSense
+  BUILD_LOG: build-output.log
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SOURCE_REPO }}
+          ssh-key: ${{ secrets.SOURCE_DEPLOY_KEY }}
+          persist-credentials: false
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: 21
+
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: mobile-gradle-${{ runner.os }}-${{ hashFiles('mobile/gradle/libs.versions.toml', 'mobile/**/*.gradle.kts', 'mobile/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: mobile-gradle-${{ runner.os }}-
+
+      # The JVM's tests and the R8 release build, the output in BUILD_LOG.
+      # The APK is unsigned: signing is the publish workflows' (and needs the
+      # release key, which this check never sees).
+      - name: Test and build
+        working-directory: mobile
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          start=$(date +%s)
+          ./gradlew --no-daemon :core:jvmTest :androidApp:assembleRelease >> "$GITHUB_WORKSPACE/$BUILD_LOG" 2>&1
+          took=$(( $(date +%s) - start ))
+          apk=androidApp/build/outputs/apk/release/androidApp-release-unsigned.apk
+          [ -f "$apk" ] || { echo "没有构建出 $apk"; exit 1; }
+          tests=$(cat core/build/test-results/jvmTest/*.xml | grep -o 'tests="[0-9]*"' | grep -o '[0-9]*' | paste -sd+ - | bc)
+          {
+            echo "### Android"
+            echo "- 测试与构建：${took} 秒"
+            echo "- core 在 JVM 上的测试：${tests} 个，全部通过"
+            echo "- release APK（R8，未签名）：$(du -h "$apk" | cut -f1)"
+            echo "- 原生库：$(unzip -l "$apk" | grep -o 'lib/[^/]*/' | sort -u | tr '\n' ' ')"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "完成，用时 ${took} 秒；输出 $(wc -l < "$GITHUB_WORKSPACE/$BUILD_LOG") 行，不在公开日志里"
+
+      - name: Seal the build output
+        if: ${{ failure() }}
+        env:
+          BUILD_LOG_KEY: ${{ secrets.BUILD_LOG_KEY }}
+        run: |
+          [ -s "$BUILD_LOG" ] || { echo "失败在构建之前，原因就在上面的日志里"; exit 0; }
+          node scripts/build-log.mjs seal "$BUILD_LOG" "buildlog-${{ github.run_id }}-${{ github.run_attempt }}-android.sealed"
+          echo "构建输出已加密：在源码仓库里 node scripts/build-log.mjs open <下载的文件>"
+
+      - if: ${{ failure() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: buildlog-android
+          path: buildlog-*.sealed
+          retention-days: 7
+          if-no-files-found: ignore
+
+  ios:
+    # Apple silicon: the simulator tests and the device archive are arm64.
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SOURCE_REPO }}
+          ssh-key: ${{ secrets.SOURCE_DEPLOY_KEY }}
+          persist-credentials: false
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: 21
+
+      # Gradle's downloads, and Kotlin/Native's toolchain and caches
+      # (~/.konan), which are most of a cold iOS build.
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.konan
+          key: mobile-ios-${{ runner.os }}-${{ hashFiles('mobile/gradle/libs.versions.toml', 'mobile/**/*.gradle.kts', 'mobile/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: mobile-ios-${{ runner.os }}-
+
+      - name: Xcode
+        run: xcodebuild -version
+
+      # core's tests on the simulator, then the app archived for a device
+      # without signing and packed as an IPA (Payload/SkidSense.app, zipped),
+      # as a person sideloads it. The Xcode project is generated (XcodeGen),
+      # never committed.
+      - name: Test and build
+        working-directory: mobile
+        run: |
+          log="$GITHUB_WORKSPACE/$BUILD_LOG"
+          brew install xcodegen >> "$log" 2>&1
+          start=$(date +%s)
+          ./gradlew --no-daemon :core:iosSimulatorArm64Test >> "$log" 2>&1
+          tested=$(( $(date +%s) - start ))
+          tests=$(cat core/build/test-results/iosSimulatorArm64Test/*.xml | grep -o 'tests="[0-9]*"' | grep -o '[0-9]*' | paste -sd+ - | bc)
+          cd iosApp
+          xcodegen >> "$log" 2>&1
+          out="$RUNNER_TEMP/ios"
+          xcodebuild archive -project SkidSense.xcodeproj -scheme SkidSense -configuration Release -sdk iphoneos \
+            -destination 'generic/platform=iOS' -archivePath "$out/SkidSense.xcarchive" -derivedDataPath "$out/derived" \
+            CODE_SIGNING_ALLOWED=NO >> "$log" 2>&1
+          app="$out/SkidSense.xcarchive/Products/Applications/SkidSense.app"
+          [ -d "$app" ] || { echo "没有归档出 SkidSense.app"; exit 1; }
+          mkdir -p "$out/ipa/Payload" && cp -R "$app" "$out/ipa/Payload/"
+          version=$(/usr/libexec/PlistBuddy -c "Print :SkidSenseVersionName" "$app/Info.plist")
+          code=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$app/Info.plist")
+          (cd "$out/ipa" && zip -qry "../SkidSense-$version-ios.ipa" Payload)
+          took=$(( $(date +%s) - start ))
+          {
+            echo "### iOS"
+            echo "- 模拟器测试：${tested} 秒，${tests} 个，全部通过"
+            echo "- 测试加归档：${took} 秒"
+            echo "- 未签名 IPA：$(du -h "$out/SkidSense-$version-ios.ipa" | cut -f1)，版本 ${version}（${code}），$(lipo -archs "$app/SkidSense")"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "完成，用时 ${took} 秒；输出 $(wc -l < "$log") 行，不在公开日志里"
+
+      - name: Seal the build output
+        if: ${{ failure() }}
+        env:
+          BUILD_LOG_KEY: ${{ secrets.BUILD_LOG_KEY }}
+        run: |
+          [ -s "$BUILD_LOG" ] || { echo "失败在构建之前，原因就在上面的日志里"; exit 0; }
+          node scripts/build-log.mjs seal "$BUILD_LOG" "buildlog-${{ github.run_id }}-${{ github.run_attempt }}-ios.sealed"
+          echo "构建输出已加密：在源码仓库里 node scripts/build-log.mjs open <下载的文件>"
+
+      - if: ${{ failure() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: buildlog-ios
+          path: buildlog-*.sealed
+          retention-days: 7
+          if-no-files-found: ignore
