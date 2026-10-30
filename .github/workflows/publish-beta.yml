@@ -38,6 +38,7 @@ jobs:
       contents: write
     outputs:
       version: ${{ steps.version.outputs.version }}
+      code: ${{ steps.version.outputs.code }}
     steps:
       # The one checkout that keeps the deploy key: this job pushes.
       - uses: actions/checkout@v7
@@ -61,6 +62,20 @@ jobs:
           printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+-[0-9A-Za-z.-]+$' || {
             echo "版本号必须形如 1.1.0-beta.1，收到的是「$version」"; exit 1
           }
+          # The phone ships under the same version, numbered for Android as
+          # mobile/'s AppVersion does: major × 1,000,000 + minor × 10,000 +
+          # patch × 100 + n for beta.n (99 is the release's). So a beta is
+          # `-beta.N` with N from 1 to 98, and minor and patch stay under 100.
+          printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+$' || {
+            echo "beta 的版本号必须形如 1.1.0-beta.1（手机端按 beta 序号排版本），收到的是「$version」"; exit 1
+          }
+          IFS=. read -r major minor patch <<< "${version%%-*}"
+          beta="${version##*-beta.}"
+          [ "$((10#$minor))" -lt 100 ] && [ "$((10#$patch))" -lt 100 ] && [ "$((10#$beta))" -ge 1 ] && [ "$((10#$beta))" -le 98 ] || {
+            echo "次版本号和修订号都要小于 100，beta 序号在 1 到 98 之间（手机端的 versionCode 放不下），收到的是「$version」"; exit 1
+          }
+          code=$(( 10#$major * 1000000 + 10#$minor * 10000 + 10#$patch * 100 + 10#$beta ))
+          echo "code=$code" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "版本：$version（预发布）"
 
@@ -266,12 +281,340 @@ jobs:
           echo "构建输出已加密，挂在 v$VERSION 上：$sealed"
           echo "在源码仓库里读：node scripts/build-log.mjs read v$VERSION"
 
+  # The phone app (mobile/ in the source), shipped with the desktop under the
+  # same version and tag: its tests, an Android build signed apart from it,
+  # and an unsigned iOS archive. Off until the repository variable
+  # MOBILE_RELEASE is `true`: the phone's cut-over from the Flutter app and
+  # the signing secrets are set by hand, and until then a release carries no
+  # phone files. Each job checks out the tag prepare made, so every file is
+  # built from one commit, and writes what it prints to BUILD_LOG as `build`
+  # does, sealed onto the draft when it fails.
+  mobile-test:
+    name: mobile-test (${{ matrix.name }})
+    needs: prepare
+    if: ${{ vars.MOBILE_RELEASE == 'true' }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    env:
+      BUILD_LOG: build-output.log
+      VERSION: ${{ needs.prepare.outputs.version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # core and the platform services on the JVM, and the publish tool.
+          - name: jvm
+            os: ubuntu-latest
+          # The same tests compiled by Kotlin/Native, on the simulator.
+          - name: ios
+            os: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SOURCE_REPO }}
+          ssh-key: ${{ secrets.SOURCE_DEPLOY_KEY }}
+          persist-credentials: false
+          ref: v${{ needs.prepare.outputs.version }}
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: 21
+
+      # Gradle's downloads, and on macOS Kotlin/Native's toolchain (~/.konan),
+      # most of a cold iOS build.
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.konan
+          key: mobile-${{ runner.os }}-${{ hashFiles('mobile/gradle/libs.versions.toml', 'mobile/**/*.gradle.kts', 'mobile/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: mobile-${{ runner.os }}-
+
+      - name: Test
+        working-directory: mobile
+        run: |
+          [ -z "$ANDROID_HOME" ] || echo "sdk.dir=$ANDROID_HOME" > local.properties
+          if [ "${{ matrix.name }}" = "jvm" ]; then
+            tasks=":core:jvmTest :platform:jvmTest :tools:publish:test"
+          else
+            tasks=":core:iosSimulatorArm64Test :platform:iosSimulatorArm64Test"
+          fi
+          ./gradlew --no-daemon $tasks >> "$GITHUB_WORKSPACE/$BUILD_LOG" 2>&1
+          echo "测试通过；输出 $(wc -l < "$GITHUB_WORKSPACE/$BUILD_LOG") 行，不在公开日志里"
+
+      - name: Seal the build output onto the release
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUILD_LOG_KEY: ${{ secrets.BUILD_LOG_KEY }}
+        run: |
+          [ -s "$BUILD_LOG" ] || { echo "失败在构建之前，原因就在上面的日志里"; exit 0; }
+          sealed="buildlog-${{ github.run_id }}-${{ github.run_attempt }}-mobile-test-${{ matrix.name }}.sealed"
+          node scripts/build-log.mjs seal "$BUILD_LOG" "$sealed"
+          gh release upload "v$VERSION" "$sealed" -R "$RELEASE_REPO" --clobber
+          echo "构建输出已加密，挂在 v$VERSION 上：$sealed"
+
+  # One release build with every ABI, R8 in full, left unsigned: the release
+  # key never meets a build (android-sign signs it). The APK reaches
+  # android-sign through the draft as a hand-off file, which comes off with
+  # the manifests; R8's mapping, which reads a crash's stack, stays on the
+  # release sealed with BUILD_LOG_KEY (`node scripts/build-log.mjs open`).
+  android:
+    needs: prepare
+    if: ${{ vars.MOBILE_RELEASE == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    env:
+      BUILD_LOG: build-output.log
+      VERSION: ${{ needs.prepare.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SOURCE_REPO }}
+          ssh-key: ${{ secrets.SOURCE_DEPLOY_KEY }}
+          persist-credentials: false
+          ref: v${{ needs.prepare.outputs.version }}
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: 21
+
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: mobile-android-${{ hashFiles('mobile/gradle/libs.versions.toml', 'mobile/**/*.gradle.kts', 'mobile/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: mobile-android-
+
+      - name: Build the APK
+        working-directory: mobile
+        env:
+          BUILD_LOG_KEY: ${{ secrets.BUILD_LOG_KEY }}
+          # The repackaging guard's pin (BuildFlags.signingSha256): the
+          # release certificate's SHA-256, public — it rides in every APK —
+          # so a repository variable, not a secret. Unset, the guard is off.
+          SKIDSENSE_SIGNING_SHA256: ${{ vars.ANDROID_SIGNING_SHA256 }}
+        run: |
+          log="$GITHUB_WORKSPACE/$BUILD_LOG"
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          ./gradlew --no-daemon :androidApp:assembleRelease >> "$log" 2>&1
+          apk=androidApp/build/outputs/apk/release/androidApp-release-unsigned.apk
+          mapping=androidApp/build/outputs/mapping/release/mapping.txt
+          [ -f "$apk" ] && [ -f "$mapping" ] || { echo "没有构建出 APK 或 R8 的 mapping"; exit 1; }
+          mkdir -p "$RUNNER_TEMP/out"
+          cp "$apk" "$RUNNER_TEMP/out/handoff-${{ github.run_id }}-android-unsigned.apk"
+          node ../scripts/build-log.mjs seal "$mapping" "$RUNNER_TEMP/out/SkidSense-$VERSION-android-mapping.sealed"
+          echo "构建完成：$(du -h "$apk" | cut -f1)；输出 $(wc -l < "$log") 行，不在公开日志里"
+
+      - name: Hand the APK to android-sign
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "v$VERSION" "$RUNNER_TEMP"/out/* -R "$RELEASE_REPO" --clobber
+
+      - name: Seal the build output onto the release
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUILD_LOG_KEY: ${{ secrets.BUILD_LOG_KEY }}
+        run: |
+          [ -s "$BUILD_LOG" ] || { echo "失败在构建之前，原因就在上面的日志里"; exit 0; }
+          sealed="buildlog-${{ github.run_id }}-${{ github.run_attempt }}-android.sealed"
+          node scripts/build-log.mjs seal "$BUILD_LOG" "$sealed"
+          gh release upload "v$VERSION" "$sealed" -R "$RELEASE_REPO" --clobber
+          echo "构建输出已加密，挂在 v$VERSION 上：$sealed"
+
+  # One APK per ABI cut from the universal one (its other ABIs' libraries
+  # left out) and the universal one itself, each aligned for 16 KB pages and
+  # signed v2 with the release key — the Flutter app's, so this installs over
+  # it — then checked against the certificate, the version and the alignment
+  # before anything is uploaded. One build, one versionCode for all four.
+  # The key is in the `android-signing` environment, and this job checks out
+  # nothing and builds nothing: no code from the source runs beside it.
+  android-sign:
+    needs: [prepare, android, mobile-test]
+    if: ${{ vars.MOBILE_RELEASE == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: android-signing
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.prepare.outputs.version }}
+      CODE: ${{ needs.prepare.outputs.code }}
+    steps:
+      - name: Fetch the APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "v$VERSION" -R "$RELEASE_REPO" -p "handoff-${{ github.run_id }}-android-unsigned.apk" -D "$RUNNER_TEMP/in"
+          ls -la "$RUNNER_TEMP/in"
+
+      - name: Restore the signing key
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          [ -n "$KEYSTORE" ] || { echo "缺少 ANDROID_KEYSTORE_BASE64 secret（android-signing 环境）"; exit 1; }
+          printf '%s' "$KEYSTORE" | base64 -d > "$RUNNER_TEMP/release.jks"
+
+      - name: Cut it per ABI and sign
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          tools="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          unsigned="$RUNNER_TEMP/in/handoff-${{ github.run_id }}-android-unsigned.apk"
+          mkdir -p "$RUNNER_TEMP/out"
+          for pair in universal:all arm64:arm64-v8a arm:armeabi-v7a x64:x86_64; do
+            token="${pair%%:*}"
+            abi="${pair#*:}"
+            python3 - "$unsigned" "$RUNNER_TEMP/$token.apk" "$abi" <<'EOF'
+          import sys, zipfile
+          source, target, abi = sys.argv[1:]
+          with zipfile.ZipFile(source) as apk, zipfile.ZipFile(target, 'w') as out:
+              for entry in apk.infolist():
+                  if abi != 'all' and entry.filename.startswith('lib/') and not entry.filename.startswith(f'lib/{abi}/'):
+                      continue
+                  copy = zipfile.ZipInfo(entry.filename, date_time=entry.date_time)
+                  copy.compress_type = entry.compress_type
+                  copy.external_attr = entry.external_attr
+                  out.writestr(copy, apk.read(entry))
+          EOF
+            "$tools/zipalign" -P 16 -f 4 "$RUNNER_TEMP/$token.apk" "$RUNNER_TEMP/$token-aligned.apk"
+            "$tools/apksigner" sign --ks "$RUNNER_TEMP/release.jks" --ks-key-alias "$ANDROID_KEY_ALIAS" \
+              --ks-pass env:ANDROID_KEYSTORE_PASSWORD --key-pass env:ANDROID_KEY_PASSWORD \
+              --v1-signing-enabled false --v2-signing-enabled true --v3-signing-enabled false --v4-signing-enabled false \
+              --out "$RUNNER_TEMP/out/SkidSense-$VERSION-android-$token.apk" "$RUNNER_TEMP/$token-aligned.apk"
+          done
+          rm -f "$RUNNER_TEMP/release.jks"
+          ls -la "$RUNNER_TEMP/out"
+
+      # Signed with the release key, numbered as the version says, and
+      # aligned — or nothing is uploaded. An APK signed otherwise would never
+      # install over a copy already there; one numbered lower would be
+      # refused as a downgrade; one misaligned would not install on a phone
+      # with 16 KB pages.
+      - name: Verify the APKs
+        env:
+          EXPECTED: ${{ secrets.ANDROID_CERT_SHA256 }}
+        run: |
+          [ -n "$EXPECTED" ] || { echo "缺少 ANDROID_CERT_SHA256 secret（android-signing 环境）"; exit 1; }
+          tools="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          for apk in "$RUNNER_TEMP"/out/*.apk; do
+            # Every signer's certificate, whatever apksigner calls them
+            # ("Signer #1 certificate …" until 36, "V2 Signer: certificate …"
+            # from 37): one, the release key's.
+            digest="$("$tools/apksigner" verify --print-certs "$apk" | sed -n -E 's/.*certificate SHA-256 digest: ([0-9a-f]{64})$/\1/p' | sort -u)"
+            [ "$digest" = "$EXPECTED" ] || { echo "$apk 的签名不是发布密钥（${digest}）"; exit 1; }
+            badging="$("$tools/aapt2" dump badging "$apk" | head -1)"
+            echo "$badging" | grep -q "versionCode='$CODE'" || { echo "$apk 的 versionCode 不是 ${CODE}：$badging"; exit 1; }
+            echo "$badging" | grep -q "versionName='$VERSION'" || { echo "$apk 的 versionName 不是 ${VERSION}：$badging"; exit 1; }
+            "$tools/zipalign" -c -P 16 4 "$apk" || { echo "$apk 没有按 16 KB 对齐"; exit 1; }
+            echo "✓ $(basename "$apk")"
+          done
+
+      - name: Upload to the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "v$VERSION" "$RUNNER_TEMP"/out/*.apk -R "$RELEASE_REPO" --clobber
+
+  # The iPhone app, archived for a device without signing and packed as an
+  # IPA (Payload/SkidSense.app, zipped) for a person to sign and sideload:
+  # there is no paid developer account behind it, so no App Store and no
+  # in-app update. Its dSYMs stay on the release sealed, as the mapping does.
+  ios:
+    needs: [prepare, mobile-test]
+    if: ${{ vars.MOBILE_RELEASE == 'true' }}
+    runs-on: macos-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    env:
+      BUILD_LOG: build-output.log
+      VERSION: ${{ needs.prepare.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.SOURCE_REPO }}
+          ssh-key: ${{ secrets.SOURCE_DEPLOY_KEY }}
+          persist-credentials: false
+          ref: v${{ needs.prepare.outputs.version }}
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: 21
+
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.konan
+          key: mobile-${{ runner.os }}-${{ hashFiles('mobile/gradle/libs.versions.toml', 'mobile/**/*.gradle.kts', 'mobile/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: mobile-${{ runner.os }}-
+
+      # The Xcode project is generated (XcodeGen), never committed; its
+      # pre-generate command writes the version Gradle reads from package.json.
+      - name: Archive and pack the IPA
+        working-directory: mobile
+        env:
+          BUILD_LOG_KEY: ${{ secrets.BUILD_LOG_KEY }}
+        run: |
+          log="$GITHUB_WORKSPACE/$BUILD_LOG"
+          brew install xcodegen >> "$log" 2>&1
+          cd iosApp
+          xcodegen >> "$log" 2>&1
+          out="$RUNNER_TEMP/ios"
+          xcodebuild archive -project SkidSense.xcodeproj -scheme SkidSense -configuration Release -sdk iphoneos \
+            -destination 'generic/platform=iOS' -archivePath "$out/SkidSense.xcarchive" -derivedDataPath "$out/derived" \
+            CODE_SIGNING_ALLOWED=NO >> "$log" 2>&1
+          app="$out/SkidSense.xcarchive/Products/Applications/SkidSense.app"
+          [ -d "$app" ] || { echo "没有归档出 SkidSense.app"; exit 1; }
+          name="$(/usr/libexec/PlistBuddy -c "Print :SkidSenseVersionName" "$app/Info.plist")"
+          [ "$name" = "$VERSION" ] || { echo "IPA 的版本是「$name」，本应是 $VERSION"; exit 1; }
+          mkdir -p "$out/ipa/Payload" "$out/release"
+          cp -R "$app" "$out/ipa/Payload/"
+          (cd "$out/ipa" && zip -qry "$out/release/SkidSense-$VERSION-ios.ipa" Payload)
+          if [ -d "$out/SkidSense.xcarchive/dSYMs" ]; then
+            tar -cf "$out/dsyms.tar" -C "$out/SkidSense.xcarchive" dSYMs
+            node "$GITHUB_WORKSPACE/scripts/build-log.mjs" seal "$out/dsyms.tar" "$out/release/SkidSense-$VERSION-ios-dsym.sealed"
+          else
+            echo "::warning::归档里没有 dSYM"
+          fi
+          echo "完成：IPA $(du -h "$out/release/SkidSense-$VERSION-ios.ipa" | cut -f1)；输出 $(wc -l < "$log") 行，不在公开日志里"
+
+      - name: Upload to the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "v$VERSION" "$RUNNER_TEMP"/ios/release/* -R "$RELEASE_REPO" --clobber
+
+      - name: Seal the build output onto the release
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUILD_LOG_KEY: ${{ secrets.BUILD_LOG_KEY }}
+        run: |
+          [ -s "$BUILD_LOG" ] || { echo "失败在构建之前，原因就在上面的日志里"; exit 0; }
+          sealed="buildlog-${{ github.run_id }}-${{ github.run_attempt }}-ios.sealed"
+          node scripts/build-log.mjs seal "$BUILD_LOG" "$sealed"
+          gh release upload "v$VERSION" "$sealed" -R "$RELEASE_REPO" --clobber
+          echo "构建输出已加密，挂在 v$VERSION 上：$sealed"
+
   publish:
     # `needs` lists every job whose outputs are read, not only the direct
     # dependency: `needs.prepare.outputs.version` resolves to an empty string
     # unless `prepare` is named here, and an empty version writes a release
     # nothing can find.
-    needs: [prepare, build]
+    needs: [prepare, build, mobile-test, android, android-sign, ios]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     permissions:
@@ -337,6 +680,36 @@ jobs:
             console.log("索引包含：" + [...have].join("、"))
           '
 
+      # The phone's index (mobile.beta.json), written by the source's own tool
+      # (mobile/tools/publish) through the classes the app reads it with,
+      # from the APKs android-sign put on the release — and only when it did:
+      # a phone is never offered files that are not there.
+      - uses: actions/setup-java@v6
+        if: ${{ needs.android-sign.result == 'success' }}
+        with:
+          distribution: zulu
+          java-version: 21
+
+      - name: Write the phone's index
+        if: ${{ needs.android-sign.result == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          gh release download "v$VERSION" -R "$RELEASE_REPO" -p "SkidSense-$VERSION-android-*.apk" -D apks
+          (cd mobile && ./gradlew --no-daemon -q :tools:publish:installDist) > "$RUNNER_TEMP/publish-tool.log" 2>&1 || {
+            echo "手机端的发布工具没有构建出来"; exit 1
+          }
+          mobile/tools/publish/build/install/publish/bin/publish index --version "$VERSION" \
+            --notes-file notes.md --out mobile.beta.json apks
+          cat mobile.beta.json
+
+      # On, but the phone did not make it all the way: the desktop still
+      # ships, and the run says what the phone is missing.
+      - name: Say what the phone is missing
+        if: ${{ vars.MOBILE_RELEASE == 'true' && (needs.android-sign.result != 'success' || needs.ios.result != 'success') }}
+        run: echo "::warning::手机端没有完整发布：Android ${{ needs.android-sign.result }}，iOS ${{ needs.ios.result }}"
+
       - name: Upload
         env:
           GH_TOKEN: ${{ github.token }}
@@ -387,6 +760,22 @@ jobs:
             ${sha:+-f sha="$sha"}
           echo "已提交 update.beta.json（$VERSION）"
 
+      # The phone's index goes the same way as the desktop's, and before the
+      # release is published, for the same reason.
+      - name: Commit the phone's index
+        if: ${{ needs.android-sign.result == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          sha="$(gh api "repos/$RELEASE_REPO/contents/mobile.beta.json?ref=main" -q .sha 2>/dev/null || true)"
+          gh api --method PUT "repos/$RELEASE_REPO/contents/mobile.beta.json" \
+            -f message="index: $VERSION (mobile)" \
+            -f content="$(base64 -w0 mobile.beta.json)" \
+            -f branch=main \
+            ${sha:+-f sha="$sha"}
+          echo "已提交 mobile.beta.json（$VERSION）"
+
       # `--prerelease` is what keeps a beta away from everyone who did not
       # ask for one: GitHub does not pick a pre-release as "latest", and the
       # updater only reads pre-releases when allowPrerelease is on. The flag
@@ -433,6 +822,18 @@ jobs:
           fi
           echo "✓ 索引已是 $VERSION：$index"
 
+      # As the desktop's: the committed copy must describe this version.
+      - name: Confirm the phone's feed
+        if: ${{ needs.android-sign.result == 'success' }}
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          index="https://raw.githubusercontent.com/$RELEASE_REPO/main/mobile.beta.json"
+          body="$(curl -s -L "$index")"
+          published="$(printf '%s' "$body" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{process.stdout.write(String(JSON.parse(s).version??""))}catch{process.stdout.write("")}})')"
+          [ "$published" = "$VERSION" ] || { echo "✗ 仓库里的手机索引说 $published，本应是 $VERSION：$index"; exit 1; }
+          echo "✓ 手机索引已是 $VERSION：$index"
+
       # The hand-off manifests come off last, and only once every build of the
       # run has succeeded: re-running a failed build re-runs this job too, and
       # it must still find the other builds' manifests — with them gone it
@@ -441,14 +842,14 @@ jobs:
       # an earlier attempt's included, and the sealed output of failed builds
       # with them.
       - name: Take the hand-off manifests off the release
-        if: ${{ needs.build.result == 'success' }}
+        if: ${{ needs.build.result == 'success' && (vars.MOBILE_RELEASE != 'true' || (needs.mobile-test.result == 'success' && needs.android.result == 'success' && needs.android-sign.result == 'success' && needs.ios.result == 'success')) }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ needs.prepare.outputs.version }}
         run: |
           gh release view "v$VERSION" -R "$RELEASE_REPO" --json assets -q '.assets[].name' \
-            | { grep -E '^(manifest|buildlog)-' || true; } \
+            | { grep -E '^(manifest|buildlog|handoff)-' || true; } \
             | while read -r name; do
                 gh release delete-asset "v$VERSION" "$name" -R "$RELEASE_REPO" --yes
                 echo "已移除 $name"
