@@ -1,36 +1,36 @@
 {
-  "version": "1.2.0",
-  "published": "2026-10-30T03:34:14Z",
-  "notes": "### 新增\n\n- **官方账号**：可添加多个 Claude、ChatGPT、Kimi、xAI 官方登录，每个智能体单独选用哪一个，并显示套餐用量\n- **一键安装智能体**：在「设置 → 智能体」里直接安装、更新、卸载各智能体的命令行工具，本机不需要装 Node；可开启「中国大陆加速」\n- **新增智能体 OpenCode**；DeepSeek（dsh）现在可以正常对话\n- **代码编辑器**：支持补全、悬停提示、错误标注、跳转定义、查找引用、重命名和格式化；新增 Kotlin、Dart、汇编的语法高亮\n- **「自动」审批模式**（Claude Code）：由智能体自行判断哪些操作可以直接执行，其余照常询问\n- **上下文用量环**：输入框下方显示当前对话占用的上下文，点开可查看明细，也可以一键压缩对话\n- **登录支持 YoYoAPI**，登录页可选择要登录的服务\n\n### 界面\n\n- **三栏布局**：对话列表、对话，以及右侧的「进度」栏，集中显示计划、后台任务、子代理和工作流；可以查看后台命令的输出，也可以单独停止它\n- 对话列表每行只占一行，直接显示对话在等你回答、正在运行、已完成还是出错\n- 智能体的提问和审批改为显示在提问的那个窗格里，不再弹出全屏对话框\n- 设置重新整理为四大类、十三个分区；字体、配色和对比度全面调整\n\n### 远程访问\n\n- 合并为一个开关：手机先尝试局域网直连，连不上时自动改走中继\n- 电脑睡眠唤醒、切换网络或终端输出量大时，连接更稳定；每次断开都会记录原因\n- 回合运行期间，手机上会显示实时卡片（iPhone 为实时活动）\n\n### 修复\n\n- 通过 nvm 等方式安装、只存在于登录 shell 里的命令行工具，现在每次都能找到并启动\n- 停止、删除对话和登录验证在各种情况下都能正确结束\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.0",
+  "version": "1.2.1",
+  "published": "2026-10-31T18:55:52Z",
+  "notes": "修复了Codex 生图的Bug，添加补上了OpenCode的图标\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.1",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.0/SkidSense-1.2.0-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.1/SkidSense-1.2.1-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.0/SkidSense-1.2.0-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.1/SkidSense-1.2.1-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.0/SkidSense-1.2.0-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.1/SkidSense-1.2.1-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.0/SkidSense-1.2.0-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.1/SkidSense-1.2.1-linux-x86_64.AppImage"
     }
   ]
 }
