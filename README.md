@@ -14,6 +14,19 @@ SkidSense 的安装包和自动更新源。源代码在私有仓库里，这里�
 
 安装包要和本机架构一致，装错架构的包会启动失败。
 
+### 手机版
+
+手机版单独发布，版本标签是 `mobile-v<版本>`。到 [Releases](https://github.com/LoserLiunian/SkidSense-Release/releases) 里找标题为「SkidSense 手机版」的那一条：
+
+| 系统 | 文件 |
+|---|---|
+| Android（大多数手机） | `SkidSense-<版本>-android-arm64.apk` |
+| Android（32 位 ARM，较旧的手机） | `SkidSense-<版本>-android-arm.apk` |
+| Android（不确定选哪个） | `SkidSense-<版本>-android-universal.apk` |
+| iPhone（需要自己签名安装） | `SkidSense-<版本>-ios.ipa` |
+
+Android 版会自己检查更新，读的是这个仓库里的 `mobile.release.json`（打开 Beta 更新后也读 `mobile.beta.json`）。iPhone 版没有应用内更新。
+
 ## 更新
 
 - **Windows、Linux AppImage**：应用在后台检查并下载新版本，下载好后提示重启；不重启的话，下次退出时自动安装。

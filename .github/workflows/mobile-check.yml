@@ -2,10 +2,9 @@ name: mobile-check
 
 # A check of the phone app (the source repository's mobile/), started by hand:
 # its tests on the JVM and the iOS simulator, an R8 release APK and an unsigned
-# IPA built the way the publish workflows will build them — and nothing
-# published. publish-release.yml / publish-beta.yml carry the same jobs, off
-# until the repository variable MOBILE_RELEASE is `true` (the cut-over); this
-# checks any source commit on the runners a release uses, at any time.
+# IPA built the way publish-mobile.yml builds them — and nothing published.
+# This checks any source commit on the runners a release uses, at any time,
+# without spending a version.
 #
 # As in the publish workflows: the source is reached with SOURCE_DEPLOY_KEY,
 # never kept in git's config; this log is public, and a build's output quotes
