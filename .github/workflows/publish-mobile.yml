@@ -339,11 +339,15 @@ jobs:
 
   # One APK per ABI cut from the universal one (its other ABIs' libraries
   # left out) and the universal one itself, each aligned for 16 KB pages and
-  # signed v2 with the release key — the Flutter app's, so this installs over
-  # it — then checked against the certificate, the version and the alignment
-  # before anything is uploaded. One build, one versionCode for all four.
-  # The key is in the `android-signing` environment, and this job checks out
-  # nothing and builds nothing: no code from the source runs beside it.
+  # signed v2 with the release key, then checked against the certificate, the
+  # version and the alignment before anything is uploaded. One build, one
+  # versionCode for all four. The key is this app's own, made in November
+  # 2026 when the Flutter app's could not be found: a phone with the Flutter
+  # app must uninstall it first, and every later APK must be signed with this
+  # one (its certificate's SHA-256 is ANDROID_CERT_SHA256, and the
+  # ANDROID_SIGNING_SHA256 variable pins it into the build). It is in the
+  # `android-signing` environment, and this job checks out nothing and
+  # builds nothing: no code from the source runs beside it.
   android-sign:
     needs: [prepare, android, test]
     runs-on: ubuntu-latest
