@@ -1,0 +1,40 @@
+{
+  "version": "1.2.1",
+  "published": "2026-10-31T19:21:46.394159887Z",
+  "notes": "LiquidGlass，全平台适配，修复了一些bug，优化了一些性能\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/mobile-v1.2.1",
+  "downloads": [
+    {
+      "platform": "android-arm64",
+      "label": "Android（arm64，大多数手机）",
+      "abi": "arm64-v8a",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.1/SkidSense-1.2.1-android-arm64.apk",
+      "sha256": "37db99307743a45c164c7e68134a84e34124b88a49daf918997753413ad1b940",
+      "size": 12996271
+    },
+    {
+      "platform": "android-arm",
+      "label": "Android（32 位 ARM，较旧的手机）",
+      "abi": "armeabi-v7a",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.1/SkidSense-1.2.1-android-arm.apk",
+      "sha256": "0e2a2a78b5c15ef01fbf7db58d79e660469d299f79445651fbab3ba5a81b2667",
+      "size": 11308729
+    },
+    {
+      "platform": "android-x64",
+      "label": "Android（x86_64，模拟器）",
+      "abi": "x86_64",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.1/SkidSense-1.2.1-android-x64.apk",
+      "sha256": "4dbbcbce4466b192132e5f4f7759b430c7b784449a7177a6ff8a1dc8e1311094",
+      "size": 13995680
+    },
+    {
+      "platform": "android-universal",
+      "label": "Android（通用，包含全部架构，体积较大）",
+      "abi": "universal",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.1/SkidSense-1.2.1-android-universal.apk",
+      "sha256": "f11ca60d145eb25167a8679347f09a21bb8bbbe4fbb84a8fa08296b4ab04fe59",
+      "size": 28595091
+    }
+  ]
+}
