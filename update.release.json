@@ -1,36 +1,36 @@
 {
-  "version": "1.2.4",
-  "published": "2026-11-01T15:13:34Z",
-  "notes": "### 新增\n\n- **内嵌浏览器**：在工作台里直接开网页标签页（顶栏的地球图标），和对话、文件并排；地址栏可以直接输入本机端口（如 5173）。网页在单独的浏览器环境里运行，只能打开 http/https 网址\n- **智能体操作浏览器**：智能体可以打开、点击、填写内嵌浏览器里的网页并截图，操作时网页上会显示它的光标和名字；每一步都照当前对话的审批模式询问。也可以在「设置 → 浏览器」里允许智能体操作你自己的 Chrome（需安装 Playwright 扩展，默认关闭）\n- **电脑操作电脑**：在「设置 → 远程访问 → 其他电脑」粘贴另一台电脑的配对链接，再到那台电脑上点「允许完全控制」，就能在这台电脑上打开那台电脑的窗口，像坐在它前面一样使用——对话、文件、终端、设置都在那台电脑上运行\n  - 同一网络下直连，连不上时自动经中继；断线后自动接回\n  - 那台电脑的任务提醒会弹在这台电脑上，点一下直接打开对应的对话\n  - 那台电脑上的文件可以下载到这台电脑，这台电脑的文件也可以上传或直接粘贴过去\n  - 智能体官方账号登录、MCP 服务授权，在这台电脑的浏览器里就能完成\n  - 可以在这台电脑上重启那台电脑的应用，或安装它已下载好的更新\n  - 浏览器标签页里的网页在那台电脑上运行，打开的本机端口也是那台电脑的，那台电脑上的智能体也能操作它\n\n### 说明\n\n- 「允许完全控制」只能在被操作的那台电脑上打开，随时可以收回；拿到完全控制的电脑等同于坐在那台电脑前，包括终端\n- 两台电脑需要都更新到 1.2.4 才能互相操作\n- 经中继时速度受账号流量限制，网页画面会比较慢；同一网络下最流畅\n- 远程访问的配对框新增「复制配对链接」\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.4",
+  "version": "1.2.5",
+  "published": "2026-11-01T18:37:24Z",
+  "notes": "### 新增\n\n- **对话互通**：对话里的智能体可以互相发消息、新开对话派任务，也能查看别的对话在做什么\n  - 在你的消息里 @ 一个对话，两个对话就都加入互通；也可以在侧栏对话的「⋯」菜单里选「加入对话互通」或「退出对话互通」\n  - 对方正在运行就插进它这一轮，空闲就为这条消息开一轮；对方在等你回答时先排队，等那一轮结束再送达，排队超过 5 分钟作废\n  - 要求回复的消息一定有回音：对方自己回复，或者那一轮结束时告诉发消息的一方「结束未回复」；对方出错结束也会告诉它\n  - 智能体新开的对话在侧栏有标记，跑完不打扰你，出错或提问时才提醒；你在里面发一条消息，它就算你的了\n  - 对话记录里，别的对话发来的消息会标出来自哪个对话，点名字直接打开；每一轮下面列出这一轮发出的消息和送达情况\n\n### 改进\n\n- **内嵌浏览器工具栏**：按钮按作用分组——前进后退、地址（刷新键在地址栏里）、页面工具、关闭窗格分开摆放；开发者工具、复制网址、不用缓存重新加载收进「⋯」菜单\n  - 本机服务显示为「本机 :端口」，网站显示域名，完整网址点进地址栏就能看到和修改\n  - 智能体操作网页时，地址栏换成它的颜色，并显示「正在操作」\n  - 页面加载时工具栏底部有进度线；深色模式下地址栏不再看不清\n\n### 说明\n\n- 手机等配对设备驱动的回合发出的消息，不能让别的对话跳过审批；没有审批通道的智能体（如 pi）不会被这样的消息启动\n- Claude 发消息、新开对话会按当前对话的审批模式询问；列出和查看别的对话不需要询问\n- 不同电脑之间的对话互通暂不支持\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.5",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.4/SkidSense-1.2.4-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.5/SkidSense-1.2.5-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.4/SkidSense-1.2.4-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.5/SkidSense-1.2.5-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.4/SkidSense-1.2.4-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.5/SkidSense-1.2.5-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.4/SkidSense-1.2.4-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.5/SkidSense-1.2.5-linux-x86_64.AppImage"
     }
   ]
 }
