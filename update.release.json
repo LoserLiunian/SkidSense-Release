@@ -1,36 +1,36 @@
 {
-  "version": "1.2.3",
-  "published": "2026-11-01T09:01:40Z",
-  "notes": "生图放大显示的时候，不会在下方展示提示词\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.3",
+  "version": "1.2.4",
+  "published": "2026-11-01T15:13:34Z",
+  "notes": "### 新增\n\n- **内嵌浏览器**：在工作台里直接开网页标签页（顶栏的地球图标），和对话、文件并排；地址栏可以直接输入本机端口（如 5173）。网页在单独的浏览器环境里运行，只能打开 http/https 网址\n- **智能体操作浏览器**：智能体可以打开、点击、填写内嵌浏览器里的网页并截图，操作时网页上会显示它的光标和名字；每一步都照当前对话的审批模式询问。也可以在「设置 → 浏览器」里允许智能体操作你自己的 Chrome（需安装 Playwright 扩展，默认关闭）\n- **电脑操作电脑**：在「设置 → 远程访问 → 其他电脑」粘贴另一台电脑的配对链接，再到那台电脑上点「允许完全控制」，就能在这台电脑上打开那台电脑的窗口，像坐在它前面一样使用——对话、文件、终端、设置都在那台电脑上运行\n  - 同一网络下直连，连不上时自动经中继；断线后自动接回\n  - 那台电脑的任务提醒会弹在这台电脑上，点一下直接打开对应的对话\n  - 那台电脑上的文件可以下载到这台电脑，这台电脑的文件也可以上传或直接粘贴过去\n  - 智能体官方账号登录、MCP 服务授权，在这台电脑的浏览器里就能完成\n  - 可以在这台电脑上重启那台电脑的应用，或安装它已下载好的更新\n  - 浏览器标签页里的网页在那台电脑上运行，打开的本机端口也是那台电脑的，那台电脑上的智能体也能操作它\n\n### 说明\n\n- 「允许完全控制」只能在被操作的那台电脑上打开，随时可以收回；拿到完全控制的电脑等同于坐在那台电脑前，包括终端\n- 两台电脑需要都更新到 1.2.4 才能互相操作\n- 经中继时速度受账号流量限制，网页画面会比较慢；同一网络下最流畅\n- 远程访问的配对框新增「复制配对链接」\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.4",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.3/SkidSense-1.2.3-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.4/SkidSense-1.2.4-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.3/SkidSense-1.2.3-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.4/SkidSense-1.2.4-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.3/SkidSense-1.2.3-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.4/SkidSense-1.2.4-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.3/SkidSense-1.2.3-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.4/SkidSense-1.2.4-linux-x86_64.AppImage"
     }
   ]
 }
