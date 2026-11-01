@@ -1,36 +1,36 @@
 {
-  "version": "1.2.2",
-  "published": "2026-11-01T08:17:19Z",
-  "notes": "支持语言编辑器，代码提示器，一键安装\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.2",
+  "version": "1.2.3",
+  "published": "2026-11-01T09:01:40Z",
+  "notes": "生图放大显示的时候，不会在下方展示提示词\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.3",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.2/SkidSense-1.2.2-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.3/SkidSense-1.2.3-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.2/SkidSense-1.2.2-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.3/SkidSense-1.2.3-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.2/SkidSense-1.2.2-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.3/SkidSense-1.2.3-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.2/SkidSense-1.2.2-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.3/SkidSense-1.2.3-linux-x86_64.AppImage"
     }
   ]
 }
