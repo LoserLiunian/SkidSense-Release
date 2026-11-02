@@ -1,36 +1,36 @@
 {
-  "version": "1.2.5",
-  "published": "2026-11-01T18:37:24Z",
-  "notes": "### 新增\n\n- **对话互通**：对话里的智能体可以互相发消息、新开对话派任务，也能查看别的对话在做什么\n  - 在你的消息里 @ 一个对话，两个对话就都加入互通；也可以在侧栏对话的「⋯」菜单里选「加入对话互通」或「退出对话互通」\n  - 对方正在运行就插进它这一轮，空闲就为这条消息开一轮；对方在等你回答时先排队，等那一轮结束再送达，排队超过 5 分钟作废\n  - 要求回复的消息一定有回音：对方自己回复，或者那一轮结束时告诉发消息的一方「结束未回复」；对方出错结束也会告诉它\n  - 智能体新开的对话在侧栏有标记，跑完不打扰你，出错或提问时才提醒；你在里面发一条消息，它就算你的了\n  - 对话记录里，别的对话发来的消息会标出来自哪个对话，点名字直接打开；每一轮下面列出这一轮发出的消息和送达情况\n\n### 改进\n\n- **内嵌浏览器工具栏**：按钮按作用分组——前进后退、地址（刷新键在地址栏里）、页面工具、关闭窗格分开摆放；开发者工具、复制网址、不用缓存重新加载收进「⋯」菜单\n  - 本机服务显示为「本机 :端口」，网站显示域名，完整网址点进地址栏就能看到和修改\n  - 智能体操作网页时，地址栏换成它的颜色，并显示「正在操作」\n  - 页面加载时工具栏底部有进度线；深色模式下地址栏不再看不清\n\n### 说明\n\n- 手机等配对设备驱动的回合发出的消息，不能让别的对话跳过审批；没有审批通道的智能体（如 pi）不会被这样的消息启动\n- Claude 发消息、新开对话会按当前对话的审批模式询问；列出和查看别的对话不需要询问\n- 不同电脑之间的对话互通暂不支持\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.5",
+  "version": "1.2.6",
+  "published": "2026-11-02T02:40:09Z",
+  "notes": "### 新增\n\n- **群组**：一个主智能体带一组智能体一起干活。在侧栏工作区的「＋」菜单里选「新建群组…」，选好主智能体、可以派活的智能体（每种最多开几个对话）和最多同时干活的人数\n  - 先对齐再开工：主智能体先和你把要做成什么、怎么验收、边界在哪对齐成一份需求单，显示在群组看板上；没有待澄清的问题后，你点「开工」它才动手\n  - 开工后主智能体按 cc-master 的方法拆任务、排依赖，按任务挑智能体派活，交回后自己验收\n  - 每个成员都是一个普通对话：看板上能看到任务图、每个成员此刻在想什么做什么、派活原文和交回的结果；成员等批准时直接在卡片上点\n  - 需要你拍板的事会以决定卡片出现在看板最上面，点选项或直接写下你的决定\n  - 主智能体可以是 Claude Code、Codex、Kimi Code、Grok、OpenCode 或 Pi；成员可以是任何已安装的智能体\n\n### 改进\n\n- **对话互通**现在也支持 Kimi Code、Grok 和 OpenCode：它们也能给别的对话发消息、新开对话派任务、查看别的对话\n\n### 说明\n\n- 应用自带 cc-master（MIT 许可的插件 0.21.1 和 ccm 0.22.1），数据放在应用自己的目录里，不影响你自己安装的 cc-master\n- Claude Code 以外的主智能体：开工时由 SkidSense 替它建好看板；它改看板、读 cc-master 方法用的群组工具会按当前对话的审批模式询问\n- 群组暂不支持 Windows；手机上暂时看不到群组\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.6",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.5/SkidSense-1.2.5-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.6/SkidSense-1.2.6-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.5/SkidSense-1.2.5-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.6/SkidSense-1.2.6-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.5/SkidSense-1.2.5-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.6/SkidSense-1.2.6-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.5/SkidSense-1.2.5-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.6/SkidSense-1.2.6-linux-x86_64.AppImage"
     }
   ]
 }
