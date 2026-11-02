@@ -1,36 +1,36 @@
 {
-  "version": "1.2.6",
-  "published": "2026-11-02T02:40:09Z",
-  "notes": "### 新增\n\n- **群组**：一个主智能体带一组智能体一起干活。在侧栏工作区的「＋」菜单里选「新建群组…」，选好主智能体、可以派活的智能体（每种最多开几个对话）和最多同时干活的人数\n  - 先对齐再开工：主智能体先和你把要做成什么、怎么验收、边界在哪对齐成一份需求单，显示在群组看板上；没有待澄清的问题后，你点「开工」它才动手\n  - 开工后主智能体按 cc-master 的方法拆任务、排依赖，按任务挑智能体派活，交回后自己验收\n  - 每个成员都是一个普通对话：看板上能看到任务图、每个成员此刻在想什么做什么、派活原文和交回的结果；成员等批准时直接在卡片上点\n  - 需要你拍板的事会以决定卡片出现在看板最上面，点选项或直接写下你的决定\n  - 主智能体可以是 Claude Code、Codex、Kimi Code、Grok、OpenCode 或 Pi；成员可以是任何已安装的智能体\n\n### 改进\n\n- **对话互通**现在也支持 Kimi Code、Grok 和 OpenCode：它们也能给别的对话发消息、新开对话派任务、查看别的对话\n\n### 说明\n\n- 应用自带 cc-master（MIT 许可的插件 0.21.1 和 ccm 0.22.1），数据放在应用自己的目录里，不影响你自己安装的 cc-master\n- Claude Code 以外的主智能体：开工时由 SkidSense 替它建好看板；它改看板、读 cc-master 方法用的群组工具会按当前对话的审批模式询问\n- 群组暂不支持 Windows；手机上暂时看不到群组\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.6",
+  "version": "1.2.7",
+  "published": "2026-11-02T03:36:53Z",
+  "notes": "### 新增\n\n- **群组可以指定思考强度**：新建群组时，主智能体和成员池里的每一种智能体都能选模型和思考强度，强度按所选模型能用的列出\n  - 打开群组里的对话时，输入框下方的模型和强度就是群组定好的，不再是默认值\n\n### 改进\n\n- **新建群组对话框**：成员多时内容可以滚动，「建群」按钮始终看得到；成员的模型改成从已配置的模型里选，不用再手动输入模型 ID\n\n### 修复\n\n- **Claude 向你提问时会弹出问题卡**：以前只问\"是否允许使用 AskUserQuestion\"，点了允许 Claude 也会以为你没有回答\n  - 卡片上是问题本身和每个选项的说明；多选题可以勾选多个，也可以直接写回答或跳过，几个问题会一个一个问\n  - 绕过审批模式下，Claude 现在也能向你提问\n\n### 说明\n\n- 手机上暂时还不支持多选题：可以选其中一个选项，或者直接写回答\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.7",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.6/SkidSense-1.2.6-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.7/SkidSense-1.2.7-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.6/SkidSense-1.2.6-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.7/SkidSense-1.2.7-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.6/SkidSense-1.2.6-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.7/SkidSense-1.2.7-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.6/SkidSense-1.2.6-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.7/SkidSense-1.2.7-linux-x86_64.AppImage"
     }
   ]
 }
