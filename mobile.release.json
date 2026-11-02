@@ -1,39 +1,39 @@
 {
-  "version": "1.2.2",
-  "published": "2026-11-01T08:34:43.612902996Z",
-  "notes": "修复了图片显示的Bug\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/mobile-v1.2.2",
+  "version": "1.2.7",
+  "published": "2026-11-02T07:53:07.072227840Z",
+  "notes": "### 改进\n\n- **自动检查更新**：每次打开应用都会检查有没有新版本；应用在前台时每 15 分钟再检查一次\n  - 放到后台时不检查，回到前台时如果离上次检查已超过 15 分钟，会马上检查\n  - 在设置里手动检查过之后，下一次自动检查从那时重新计时\n  - 检查失败（比如没有网络）时不会打扰你；下载失败、还没允许安装这类需要你处理的提示，不会被自动检查盖掉\n\n### 说明\n\n- 应用内更新只在安卓上有，iPhone 不受影响\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/mobile-v1.2.7",
   "downloads": [
     {
       "platform": "android-arm64",
       "label": "Android（arm64，大多数手机）",
       "abi": "arm64-v8a",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.2/SkidSense-1.2.2-android-arm64.apk",
-      "sha256": "e1b6634314b86dc4205b3234f206462b367ad035b174a448e6af0ef73046bf0f",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.7/SkidSense-1.2.7-android-arm64.apk",
+      "sha256": "0a3779935df88b8da56e88603af0ccfc948fe99479ea06f2080a2040a884a41c",
       "size": 13016751
     },
     {
       "platform": "android-arm",
       "label": "Android（32 位 ARM，较旧的手机）",
       "abi": "armeabi-v7a",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.2/SkidSense-1.2.2-android-arm.apk",
-      "sha256": "d07452630aed8cf234ab55e430d7ad31d0b6f3faa66988d0d92099b04d414667",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.7/SkidSense-1.2.7-android-arm.apk",
+      "sha256": "a83c96b5030c35c617542726c1950331336a4c4db6cecd4449b6a369b1aed9a0",
       "size": 11325113
     },
     {
       "platform": "android-x64",
       "label": "Android（x86_64，模拟器）",
       "abi": "x86_64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.2/SkidSense-1.2.2-android-x64.apk",
-      "sha256": "cf78eb88ee0772b9340184d687d3402f764730217bc9ed03f3feda8e08bdaf5c",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.7/SkidSense-1.2.7-android-x64.apk",
+      "sha256": "058ecf88a4cc58d5d21db002298fbd13d04b98f77e2d81e71c7222abc0011fdf",
       "size": 14016160
     },
     {
       "platform": "android-universal",
       "label": "Android（通用，包含全部架构，体积较大）",
       "abi": "universal",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.2/SkidSense-1.2.2-android-universal.apk",
-      "sha256": "afeaa22b67f8df6250c557fd67dc9e3cf8a920fca4e9b5e03710b49ff3b137f1",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.7/SkidSense-1.2.7-android-universal.apk",
+      "sha256": "44e95440687ad0007aaef1f14a38007613b44cc4c3e309b0cccb730ac81f69d5",
       "size": 28615571
     }
   ]
