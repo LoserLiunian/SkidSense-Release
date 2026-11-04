@@ -1,36 +1,36 @@
 {
-  "version": "1.2.9",
-  "published": "2026-11-04T06:32:14Z",
-  "notes": "### 改进\n\n- **换了网络后更快回到局域网直连**：电脑或手机换了 Wi-Fi、路由器重新分配了地址之后，手机经中继连上时会从电脑这里拿到它现在的局域网地址，随即切回局域网直连，不用重启 App\n- **断线发现得更快**：局域网连接没了声音，约半分钟内就会重连（以前要一分多钟）；电脑换了网络会立即重新登记地址、检查中继连接\n- **路由器重拨、光猫重启后中继恢复得更快**：电脑连中继的连接约一分多钟内自动重连（以前要两分钟以上）\n\n### 修复\n\n- **控制其他电脑**：那台电脑原来的地址被另一台电脑占用时，以前会一直连不上；现在会接着经中继连上，再自动找回局域网\n- **控制其他电脑**：这台电脑睡醒或换了网络后，不通的连接几秒内就会重连\n\n### 说明\n\n- 手机也更新到 1.2.9 才会从电脑这里拿新地址；旧版手机仍从服务器的电脑列表里查\n\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.9",
+  "version": "1.2.10",
+  "published": "2026-11-04T17:59:56Z",
+  "notes": "### 新功能\n\n- **网络代理：自动选线路**：默认「自动」，跟随系统代理、PAC 自动配置脚本和代理环境变量，TUN 模式的代理软件也能直接用；也可以选「直连」或「指定地址」\n- **网络检测**：一键检测能不能连上服务器；连不上时说明原因（地区限制、代理拒绝、证书被替换、无法连通），并自动试别的线路，找到能用的就建议换过去\n- **网关证书**：公司网络替换了加密证书时，可以指定信任它的证书\n- **标题栏的网络按钮**：点开就能看到现在走的线路，并快速切换\n- **默认展开思考内容**：设置 › 外观新增开关，打开后对话里的思考过程一出现就展开\n- **看过的图片显示缩略图**：智能体查看图片（例如 Codex 的 view_image）时，图片以缩略图显示在对应的工具调用下面\n\n### 改进\n\n- **所有连接都走设定的线路**：远程控制的中继连接（手机控制电脑、控制其他电脑）、内嵌浏览器、SSH、登录和模型列表等辅助进程，现在都按选择的线路出网\n- **智能体的请求原样转发**：经中转的模型请求保留各智能体自己的 User-Agent 和请求头，不再额外添加；压缩的响应原样返回\n- **更新 ZCode 协议**：适配新版 ZCode CLI（zcode-app-cli 3.17），对话、续接、工具审批、子代理、停止都恢复正常；选了本地账号或云端时，请求正确走所选的服务商\n\n### 修复\n\n- **退出登录后换服务器登录超时**：退出登录后应用会完整重启、回到登录界面，再登录不再超时\n\n### 说明\n\n- 旧版里关着的代理设置会按「自动」处理；原来开着的仍是「指定地址」\n- 新版 ZCode 没有「仅计划」模式，权限菜单里不再列出\n- 手机端的缩略图需要手机也更新到 1.2.10\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.10",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.9/SkidSense-1.2.9-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.10/SkidSense-1.2.10-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.9/SkidSense-1.2.9-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.10/SkidSense-1.2.10-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.9/SkidSense-1.2.9-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.10/SkidSense-1.2.10-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.9/SkidSense-1.2.9-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.10/SkidSense-1.2.10-linux-x86_64.AppImage"
     }
   ]
 }
