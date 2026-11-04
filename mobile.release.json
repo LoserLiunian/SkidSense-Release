@@ -1,39 +1,39 @@
 {
-  "version": "1.2.8",
-  "published": "2026-11-04T04:18:29.879283746Z",
-  "notes": "### 新增\n\n- **新的登录线路「SkidSense-大陆优化1」**：登录页的服务器列表里多了一项（ai-t1.skidsense.com），排在 YoYoAPI 前面；在中国大陆访问 SkidSense 不稳定时可以换它试试\n\n### 说明\n\n- 每条线路的登录是分开保存的：换线路需要重新登录\n- 手机和电脑要登录同一条线路才能配对和远程控制；换到新线路后需要重新配对电脑\n\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/mobile-v1.2.8",
+  "version": "1.2.9",
+  "published": "2026-11-04T06:40:49.037486971Z",
+  "notes": "### 改进\n\n- **换了网络后更快重新连上电脑**：手机换 Wi-Fi、切到流量或回到前台时，会马上确认连接还通不通，不通就几秒内重连，不再显示「已连接」却一直没有反应\n- **电脑换了地址也能找回局域网**：经中继连上后，会从电脑那里拿到它现在的局域网地址，随即切回局域网直连，并记住新地址\n- **断线发现得更快**：局域网连接没了声音，约半分钟内就会重连（以前要一分多钟）；一个操作等了 30 秒没有回应时，也会马上检查连接\n- **后台通知更及时**：App 页面关掉、只留后台通知时，网络变化后也会马上重连\n- **iPhone**：在两个 Wi-Fi 之间切换，现在也会被当作网络变化处理\n\n### 说明\n\n- 从电脑那里拿新地址需要电脑也更新到 1.2.9；电脑是旧版时，手机会改向服务器查电脑的地址\n\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/mobile-v1.2.9",
   "downloads": [
     {
       "platform": "android-arm64",
       "label": "Android（arm64，大多数手机）",
       "abi": "arm64-v8a",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.8/SkidSense-1.2.8-android-arm64.apk",
-      "sha256": "6257230c2724e4feb18019217d5e57bd347afdf6927626dd01c56e3b89d3530a",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.9/SkidSense-1.2.9-android-arm64.apk",
+      "sha256": "59c2cc5e6e5a7eac36a6f711c2cbe4eab742a1ae951c5a6bf7826c73d0d3584f",
       "size": 13016751
     },
     {
       "platform": "android-arm",
       "label": "Android（32 位 ARM，较旧的手机）",
       "abi": "armeabi-v7a",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.8/SkidSense-1.2.8-android-arm.apk",
-      "sha256": "fe0c682ab489fa59c4a3f460319f763cb16d36213aba4449851472b03b77d8ea",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.9/SkidSense-1.2.9-android-arm.apk",
+      "sha256": "82ec61fd31bb379171c5787786346031794f79e2933e41b40b03b75ca09ce068",
       "size": 11325113
     },
     {
       "platform": "android-x64",
       "label": "Android（x86_64，模拟器）",
       "abi": "x86_64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.8/SkidSense-1.2.8-android-x64.apk",
-      "sha256": "840efbbe6ddcab0d9064ee762340eb147e9c5e74f3b1f582663ade9f9759aa39",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.9/SkidSense-1.2.9-android-x64.apk",
+      "sha256": "cfe95cc629d4a96acb33fb36a4fb85feb7e3cc91cfcb52ca63c77feec0bb517b",
       "size": 14016160
     },
     {
       "platform": "android-universal",
       "label": "Android（通用，包含全部架构，体积较大）",
       "abi": "universal",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.8/SkidSense-1.2.8-android-universal.apk",
-      "sha256": "39bd807a404df9f7d0b4338d7f6873b8fa08b35d6b22e610705a83aeaecde4c0",
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.9/SkidSense-1.2.9-android-universal.apk",
+      "sha256": "30e10e2e9516eec3a14f9e7c3b17ea93dee1d2ef9331703f2923aa9b153ccdca",
       "size": 28615571
     }
   ]
