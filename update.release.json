@@ -1,36 +1,36 @@
 {
-  "version": "1.2.7",
-  "published": "2026-11-02T03:36:53Z",
-  "notes": "### 新增\n\n- **群组可以指定思考强度**：新建群组时，主智能体和成员池里的每一种智能体都能选模型和思考强度，强度按所选模型能用的列出\n  - 打开群组里的对话时，输入框下方的模型和强度就是群组定好的，不再是默认值\n\n### 改进\n\n- **新建群组对话框**：成员多时内容可以滚动，「建群」按钮始终看得到；成员的模型改成从已配置的模型里选，不用再手动输入模型 ID\n\n### 修复\n\n- **Claude 向你提问时会弹出问题卡**：以前只问\"是否允许使用 AskUserQuestion\"，点了允许 Claude 也会以为你没有回答\n  - 卡片上是问题本身和每个选项的说明；多选题可以勾选多个，也可以直接写回答或跳过，几个问题会一个一个问\n  - 绕过审批模式下，Claude 现在也能向你提问\n\n### 说明\n\n- 手机上暂时还不支持多选题：可以选其中一个选项，或者直接写回答\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.7",
+  "version": "1.2.8",
+  "published": "2026-11-04T03:58:33Z",
+  "notes": "### 新增\n\n- **新的登录线路「SkidSense-大陆优化1」**：登录页的服务器列表里多了一项（ai-t1.skidsense.com），排在 YoYoAPI 前面；在中国大陆访问 SkidSense 不稳定时可以换它试试\n\n### 说明\n\n- 每条线路的登录是分开保存的：换线路需要重新登录\n- 电脑和手机要登录同一条线路才能配对和远程控制；换到新线路后，手机需要重新配对\n\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.8",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.7/SkidSense-1.2.7-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.8/SkidSense-1.2.8-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.7/SkidSense-1.2.7-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.8/SkidSense-1.2.8-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.7/SkidSense-1.2.7-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.8/SkidSense-1.2.8-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.7/SkidSense-1.2.7-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.8/SkidSense-1.2.8-linux-x86_64.AppImage"
     }
   ]
 }
