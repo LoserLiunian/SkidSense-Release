@@ -1,36 +1,36 @@
 {
-  "version": "1.2.8",
-  "published": "2026-11-04T03:58:33Z",
-  "notes": "### 新增\n\n- **新的登录线路「SkidSense-大陆优化1」**：登录页的服务器列表里多了一项（ai-t1.skidsense.com），排在 YoYoAPI 前面；在中国大陆访问 SkidSense 不稳定时可以换它试试\n\n### 说明\n\n- 每条线路的登录是分开保存的：换线路需要重新登录\n- 电脑和手机要登录同一条线路才能配对和远程控制；换到新线路后，手机需要重新配对\n\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.8",
+  "version": "1.2.9",
+  "published": "2026-11-04T06:32:14Z",
+  "notes": "### 改进\n\n- **换了网络后更快回到局域网直连**：电脑或手机换了 Wi-Fi、路由器重新分配了地址之后，手机经中继连上时会从电脑这里拿到它现在的局域网地址，随即切回局域网直连，不用重启 App\n- **断线发现得更快**：局域网连接没了声音，约半分钟内就会重连（以前要一分多钟）；电脑换了网络会立即重新登记地址、检查中继连接\n- **路由器重拨、光猫重启后中继恢复得更快**：电脑连中继的连接约一分多钟内自动重连（以前要两分钟以上）\n\n### 修复\n\n- **控制其他电脑**：那台电脑原来的地址被另一台电脑占用时，以前会一直连不上；现在会接着经中继连上，再自动找回局域网\n- **控制其他电脑**：这台电脑睡醒或换了网络后，不通的连接几秒内就会重连\n\n### 说明\n\n- 手机也更新到 1.2.9 才会从电脑这里拿新地址；旧版手机仍从服务器的电脑列表里查\n\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.9",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.8/SkidSense-1.2.8-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.9/SkidSense-1.2.9-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.8/SkidSense-1.2.8-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.9/SkidSense-1.2.9-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.8/SkidSense-1.2.8-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.9/SkidSense-1.2.9-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.8/SkidSense-1.2.8-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.9/SkidSense-1.2.9-linux-x86_64.AppImage"
     }
   ]
 }
