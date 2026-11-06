@@ -1,36 +1,36 @@
 {
-  "version": "1.2.11",
-  "published": "2026-11-05T08:21:18Z",
-  "notes": "### 新功能\n\n- **群组的设置随时可改**：建好群组以后，名字、主智能体的模型和思考强度、成员池（用哪些智能体、模型、强度、最多几个）、最多同时干活的数量都能改，开工以后也可以；看板标题栏的「设置」和侧栏群组的「⋯ → 群组设置」都能打开\n- **成员对话一键回到主对话**：群组里的对话上方多了一条群组栏，成员对话里有「返回主对话」，主对话和成员对话都能直接打开看板\n- **Kimi Code 也能当群组的主智能体**：现在 Claude Code、Codex、Kimi Code 都能当主智能体，其他智能体可以当成员\n- **新增登录服务器「SkidSense-大陆极致优化（推荐直连）」**：中国大陆用户推荐直接连接\n\n### 改进\n\n- **群组编排升级到 cc-master 最新版**：三个主智能体都用 cc-master 为各自准备的官方插件编排，需求对齐、拆任务、派活、验收的流程更完整\n- **「最多同时干活」现在会正确生效**：之前设置的数量可能不起作用，看板一直按 4 个排\n- **手机可以操作群组和对话互通**：配对的手机能建群组、改设置、开工、回答决定，也能引用其他对话、查看对话之间的消息\n- **不改你自己的配置**：群组只在主智能体这次启动时加载插件，Claude Code、Codex、Kimi Code 自己的配置文件和已装的插件保持原样\n\n### 说明\n\n- 只有 Claude Code、Codex、Kimi Code 能当主智能体，因为 cc-master 只为这三个提供了插件\n- 群组的工作区和主智能体用哪个智能体，建好以后不能改，要换请新建群组\n- 群组暂不支持 Windows\n- 在手机上操作群组和对话互通，需要手机也更新到 1.2.11\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.11",
+  "version": "1.2.12",
+  "published": "2026-11-06T20:26:32Z",
+  "notes": "### 新功能\n\n- **官方账号可以共享你自己的配置**：设置 › 模型与线路 › 官方账号 里新增「共享你的配置与记录」开关，默认关闭\n  - 关闭时，每个官方账号用自己独立的文件夹，和你自己的 Claude Code、Codex、Kimi Code、Grok 互不影响\n  - 开启后，官方账号用你自己的设置、技能、插件、MCP 服务器和历史对话，只有登录凭据各归各的\n- **群组独占标签页**：一个群组一个标签页，点别的群组会切到它的整个标签页，点普通对话回到普通标签页\n- **解散群组**：侧栏群组的「⋯」里可以解散群组，主智能体和每个成员的对话会一起删除\n- **侧栏标出对话互通**：加入对话互通的对话，标题后面有一个标志\n- **手机上一个群组只占一条通知**：Android 是一条常驻通知，iPhone 是实时活动和灵动岛。有成员提问时会响铃，可以直接在通知上批准或拒绝；出错和整个群组做完时也会提醒\n\n### 改进\n\n- **输入框里没发出去的字跟着对话走**：切到别的对话再切回来，字还在\n- **群组里同名不同 Key 的模型分开了**：群组设置、主智能体和成员的回合都走你选的那个 Key\n- **切换本地或云端时说明生效时机**：正在运行的回合（连同它开的子代理）用切换前的账号跑完，下一个回合起用新线路\n\n### 修复\n\n- 在官方账号上开的 Codex 对话，切到云端以后每一轮都报错，切回本地也一样；现在可以接着聊\n- 远程控制另一台电脑时：\n  - 窗口标题栏的按钮现在按你这台电脑的系统显示，设置里的托盘、菜单栏等选项按被控电脑的系统显示\n  - 回答里的本机地址（localhost）会在被控电脑的浏览器面板里打开\n  - 往远程终端里粘贴图片时，会提示不支持\n\n### 说明\n\n- 「手机上一个群组只占一条通知」需要电脑和手机都更新到 1.2.12\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.12",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.11/SkidSense-1.2.11-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.12/SkidSense-1.2.12-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.11/SkidSense-1.2.11-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.12/SkidSense-1.2.12-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.11/SkidSense-1.2.11-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.12/SkidSense-1.2.12-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.11/SkidSense-1.2.11-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.12/SkidSense-1.2.12-linux-x86_64.AppImage"
     }
   ]
 }
