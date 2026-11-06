@@ -1,40 +1,40 @@
 {
-  "version": "1.2.11",
-  "published": "2026-11-05T08:37:35.022318204Z",
-  "notes": "### 新功能\n\n- **群组**：对话列表最上面一行是群组入口，可以建群组、配置主智能体和成员、看需求单、开工、看任务图、回答需要你决定的事、查看成员，并随时修改群组设置\n- **群组里来回切换**：群组里的对话上方有一条群组栏，从成员对话可以回到主对话，也能直接打开群组看板\n- **引用其他对话**：在输入框里打 @ 就会弹出对话列表，选一个就能引用；它最近几轮会随你的消息一起发给智能体\n- **对话互通**：别的对话发来的消息会显示是从哪个对话来的，点一下就能打开那个对话；每轮下面列出这一轮发出的消息和送达状态；对话的「⋯」菜单里可以加入或退出对话互通\n- **新增登录服务器「SkidSense-大陆极致优化（推荐直连）」**：中国大陆用户推荐直接连接\n\n### 说明\n\n- 群组、引用和对话互通需要电脑也更新到 1.2.11\n- 手机的权限照旧有效：只能查看的手机不能改群组；没有审批权限的手机发起的操作不会跳过审批\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/mobile-v1.2.11",
+  "version": "1.2.12",
+  "published": "2026-11-06T20:48:28.596799213Z",
+  "notes": "### 新功能\n\n- **一个群组只占一条通知**：群组干活时，Android 上是一条常驻通知，iPhone 上是实时活动和灵动岛\n  - 任何一个成员提问或要审批时，这条通知会响铃，可以直接在通知上批准或拒绝\n  - 出错时会提醒，整个群组做完时也会提醒\n  - 通知上可以停止整个群组、让主智能体继续；点开会进入群组，有问题时直接进入提问的对话\n\n### 改进\n\n- **群组的对话收进群组**：主智能体和成员的对话不再出现在对话列表和搜索结果里，从最上面的群组入口进去找\n- **群组设置里同名不同 Key 的模型分开了**：选的是哪个 Key 的模型，群组就走哪个 Key\n- **「删除群组」改为「解散群组」**：确认时会说明主智能体和每个成员的对话都会一起删除\n- **切换本地或云端时说明生效时机**：正在运行的回合（连同它开的子代理）用切换前的账号跑完\n\n### 说明\n\n- 「一个群组只占一条通知」需要电脑也更新到 1.2.12；没更新的电脑仍然是一个对话一条通知\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/mobile-v1.2.12",
   "downloads": [
     {
       "platform": "android-arm64",
       "label": "Android（arm64，大多数手机）",
       "abi": "arm64-v8a",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.11/SkidSense-1.2.11-android-arm64.apk",
-      "sha256": "ce3de60bc82caf1e607aae5186348a9d469ef871edf99d80f3b52ad7e908622c",
-      "size": 13065903
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.12/SkidSense-1.2.12-android-arm64.apk",
+      "sha256": "faa24cff5c5f29cb4145ee8f005b79961a37dfb14dcd55134d1f94517b9d9fe0",
+      "size": 13082287
     },
     {
       "platform": "android-arm",
       "label": "Android（32 位 ARM，较旧的手机）",
       "abi": "armeabi-v7a",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.11/SkidSense-1.2.11-android-arm.apk",
-      "sha256": "b4e46d4c357ca60d0d0592646f9c648c93b3c8a6b00654a5edeccbfc6a60314b",
-      "size": 11374265
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.12/SkidSense-1.2.12-android-arm.apk",
+      "sha256": "4aa8f9929f487732c8fd28326bb457c83e415981794316b68ae2d3567f20fd10",
+      "size": 11390649
     },
     {
       "platform": "android-x64",
       "label": "Android（x86_64，模拟器）",
       "abi": "x86_64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.11/SkidSense-1.2.11-android-x64.apk",
-      "sha256": "91ddddce4cdc7ac9572bff999eedd1b2bd90bde41b48e496d7b341b664605aea",
-      "size": 14065312
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.12/SkidSense-1.2.12-android-x64.apk",
+      "sha256": "65b57eb06ebcd48f03203b2f5c7bed3ce4e4680128b7c0b40d81a05c5e6d8fd9",
+      "size": 14081696
     },
     {
       "platform": "android-universal",
       "label": "Android（通用，包含全部架构，体积较大）",
       "abi": "universal",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.11/SkidSense-1.2.11-android-universal.apk",
-      "sha256": "70e7579c78ca150937ec8b1747542ba416a4dfb1017f60710a3676dbf61fcd3e",
-      "size": 28664723
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.12/SkidSense-1.2.12-android-universal.apk",
+      "sha256": "fe4c1055a76598a6c1ac852268fed5e5de778307523b368542bcdf12eee2edef",
+      "size": 28681107
     }
   ]
 }
