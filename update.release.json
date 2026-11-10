@@ -1,36 +1,36 @@
 {
-  "version": "1.2.12",
-  "published": "2026-11-06T20:26:32Z",
-  "notes": "### 新功能\n\n- **官方账号可以共享你自己的配置**：设置 › 模型与线路 › 官方账号 里新增「共享你的配置与记录」开关，默认关闭\n  - 关闭时，每个官方账号用自己独立的文件夹，和你自己的 Claude Code、Codex、Kimi Code、Grok 互不影响\n  - 开启后，官方账号用你自己的设置、技能、插件、MCP 服务器和历史对话，只有登录凭据各归各的\n- **群组独占标签页**：一个群组一个标签页，点别的群组会切到它的整个标签页，点普通对话回到普通标签页\n- **解散群组**：侧栏群组的「⋯」里可以解散群组，主智能体和每个成员的对话会一起删除\n- **侧栏标出对话互通**：加入对话互通的对话，标题后面有一个标志\n- **手机上一个群组只占一条通知**：Android 是一条常驻通知，iPhone 是实时活动和灵动岛。有成员提问时会响铃，可以直接在通知上批准或拒绝；出错和整个群组做完时也会提醒\n\n### 改进\n\n- **输入框里没发出去的字跟着对话走**：切到别的对话再切回来，字还在\n- **群组里同名不同 Key 的模型分开了**：群组设置、主智能体和成员的回合都走你选的那个 Key\n- **切换本地或云端时说明生效时机**：正在运行的回合（连同它开的子代理）用切换前的账号跑完，下一个回合起用新线路\n\n### 修复\n\n- 在官方账号上开的 Codex 对话，切到云端以后每一轮都报错，切回本地也一样；现在可以接着聊\n- 远程控制另一台电脑时：\n  - 窗口标题栏的按钮现在按你这台电脑的系统显示，设置里的托盘、菜单栏等选项按被控电脑的系统显示\n  - 回答里的本机地址（localhost）会在被控电脑的浏览器面板里打开\n  - 往远程终端里粘贴图片时，会提示不支持\n\n### 说明\n\n- 「手机上一个群组只占一条通知」需要电脑和手机都更新到 1.2.12\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.12",
+  "version": "1.2.13",
+  "published": "2026-11-10T09:46:28Z",
+  "notes": "### 改进\n\n- **手机打开长对话改成分页**：先读最新的 30 个回合，往上翻再读更早的。没更新的手机仍然一次读完整个对话\n- **发给手机的内容有上限**：超大的工具输入输出、审批里的长命令、超大的回合，发给手机前会截短，手机不再因此内存溢出或闪退；电脑窗口里看到的仍是完整内容\n- **工具调用那一行只显示第一行**：最多 200 字，用 heredoc 写文件的命令不再把整个文件塞进这一行；展开就能看到完整命令，长路径照样能点开\n- **远程访问日志记下断开原因**：局域网连接断开时，`remote.log` 里会写明是对方关闭、套接字出错还是太久没有往来\n\n### 修复\n\n- 从终端接管的对话变长以后，早于最近 200 个回合、在 SkidSense 里跑过的回合不再被错放到对话末尾\n\n### 说明\n\n- 分页需要手机也更新到 1.2.13\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.13",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.12/SkidSense-1.2.12-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.13/SkidSense-1.2.13-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.12/SkidSense-1.2.12-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.13/SkidSense-1.2.13-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.12/SkidSense-1.2.12-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.13/SkidSense-1.2.13-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.12/SkidSense-1.2.12-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.13/SkidSense-1.2.13-linux-x86_64.AppImage"
     }
   ]
 }
