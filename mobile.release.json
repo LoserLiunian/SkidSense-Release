@@ -1,40 +1,40 @@
 {
-  "version": "1.2.12",
-  "published": "2026-11-06T20:48:28.596799213Z",
-  "notes": "### 新功能\n\n- **一个群组只占一条通知**：群组干活时，Android 上是一条常驻通知，iPhone 上是实时活动和灵动岛\n  - 任何一个成员提问或要审批时，这条通知会响铃，可以直接在通知上批准或拒绝\n  - 出错时会提醒，整个群组做完时也会提醒\n  - 通知上可以停止整个群组、让主智能体继续；点开会进入群组，有问题时直接进入提问的对话\n\n### 改进\n\n- **群组的对话收进群组**：主智能体和成员的对话不再出现在对话列表和搜索结果里，从最上面的群组入口进去找\n- **群组设置里同名不同 Key 的模型分开了**：选的是哪个 Key 的模型，群组就走哪个 Key\n- **「删除群组」改为「解散群组」**：确认时会说明主智能体和每个成员的对话都会一起删除\n- **切换本地或云端时说明生效时机**：正在运行的回合（连同它开的子代理）用切换前的账号跑完\n\n### 说明\n\n- 「一个群组只占一条通知」需要电脑也更新到 1.2.12；没更新的电脑仍然是一个对话一条通知\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/mobile-v1.2.12",
+  "version": "1.2.13",
+  "published": "2026-11-10T10:04:36.364953880Z",
+  "notes": "### 修复\n\n- **打开很长或很大的对话不再闪退**\n  - 对话分页读取，往上翻会自动读更早的回合\n  - 很长的回复、日志、列表和上千次工具调用会分段显示\n  - 极宽或极高的图片、公式和流程图不再让应用闪退\n  - 一条回复里有很多图片时，按显示大小解码；一屏放不下的先等着，往下翻到或点「载入图片」再显示\n  - 列特别多的表格按原文显示\n- **打开有超大回合的对话不再卡住界面**\n- **刚打开应用时第一次连不上服务器的问题**\n- **输入框粘贴超长文字不再卡死**：最多 20 万字，多出的部分不放进来，并会提示\n- **消息太长发不出去时如实提示**：不再说「回合可能已经开始」，附件也会保留\n- **断线、切到后台或锁屏期间结束的回合不再从记录里消失**，对话列表开着搜索时也一样\n\n### 改进\n\n- **「N 个回合未载入」可以点开**：点一下就把漏掉的回合补上\n- **从终端接管的长对话**：回到对话时新回合接在后面，已经翻出来的旧回合不会被换掉\n\n### 说明\n\n- 分页需要电脑也更新到 1.2.13；连接没更新的电脑时，仍然一次读完整个对话\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/mobile-v1.2.13",
   "downloads": [
     {
       "platform": "android-arm64",
       "label": "Android（arm64，大多数手机）",
       "abi": "arm64-v8a",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.12/SkidSense-1.2.12-android-arm64.apk",
-      "sha256": "faa24cff5c5f29cb4145ee8f005b79961a37dfb14dcd55134d1f94517b9d9fe0",
-      "size": 13082287
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.13/SkidSense-1.2.13-android-arm64.apk",
+      "sha256": "5bd90466b035a6593a58d3003bb770e99366e8aad15f45d5035a89096bfa2c9a",
+      "size": 13115055
     },
     {
       "platform": "android-arm",
       "label": "Android（32 位 ARM，较旧的手机）",
       "abi": "armeabi-v7a",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.12/SkidSense-1.2.12-android-arm.apk",
-      "sha256": "4aa8f9929f487732c8fd28326bb457c83e415981794316b68ae2d3567f20fd10",
-      "size": 11390649
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.13/SkidSense-1.2.13-android-arm.apk",
+      "sha256": "738aee9d62e6308cb36ee6037017fd251baa75239dba595505c701ac77c188a9",
+      "size": 11423417
     },
     {
       "platform": "android-x64",
       "label": "Android（x86_64，模拟器）",
       "abi": "x86_64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.12/SkidSense-1.2.12-android-x64.apk",
-      "sha256": "65b57eb06ebcd48f03203b2f5c7bed3ce4e4680128b7c0b40d81a05c5e6d8fd9",
-      "size": 14081696
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.13/SkidSense-1.2.13-android-x64.apk",
+      "sha256": "ba0ac5e47be6686399c87cedd759eea8cb9f5b9c510834f1f39b3f9e3aa0bff2",
+      "size": 14114464
     },
     {
       "platform": "android-universal",
       "label": "Android（通用，包含全部架构，体积较大）",
       "abi": "universal",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.12/SkidSense-1.2.12-android-universal.apk",
-      "sha256": "fe4c1055a76598a6c1ac852268fed5e5de778307523b368542bcdf12eee2edef",
-      "size": 28681107
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/mobile-v1.2.13/SkidSense-1.2.13-android-universal.apk",
+      "sha256": "39d13c8109e6b75718fb1a236cc385d6c95ed0beb92c10a1a6492533cbfdbb29",
+      "size": 28713875
     }
   ]
 }
