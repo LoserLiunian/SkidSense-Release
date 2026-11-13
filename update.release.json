@@ -1,36 +1,36 @@
 {
-  "version": "1.2.13",
-  "published": "2026-11-10T09:46:28Z",
-  "notes": "### 改进\n\n- **手机打开长对话改成分页**：先读最新的 30 个回合，往上翻再读更早的。没更新的手机仍然一次读完整个对话\n- **发给手机的内容有上限**：超大的工具输入输出、审批里的长命令、超大的回合，发给手机前会截短，手机不再因此内存溢出或闪退；电脑窗口里看到的仍是完整内容\n- **工具调用那一行只显示第一行**：最多 200 字，用 heredoc 写文件的命令不再把整个文件塞进这一行；展开就能看到完整命令，长路径照样能点开\n- **远程访问日志记下断开原因**：局域网连接断开时，`remote.log` 里会写明是对方关闭、套接字出错还是太久没有往来\n\n### 修复\n\n- 从终端接管的对话变长以后，早于最近 200 个回合、在 SkidSense 里跑过的回合不再被错放到对话末尾\n\n### 说明\n\n- 分页需要手机也更新到 1.2.13\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.13",
+  "version": "1.2.14",
+  "published": "2026-11-13T06:11:09Z",
+  "notes": "这一版没有新功能，是一轮集中的排查和修复：一百多处问题，逐条确认之后修掉。\n\n### 改进\n\n- **键盘走得到更多地方**：源代码管理的文件行、远程文件、搜索结果、标签页的关闭按钮，都能用 Tab 走到并操作；焦点框改成实色，更容易看见；浮在对话上的右侧栏按 Esc 关闭\n- **浅色主题更清楚**：状态文字（已连接、等待你等）和代码里的字符串、类型颜色加深了，浅色终端的绿色和黄色也一起加深\n- **代码块更好读**：字号从 11px 调到 13px，四周留了白\n- **几处小于 12px 的中文说明调大了**：斜杠命令提示、子代理和工作流卡片、后台命令的输出等\n- **读屏软件能读出控件的名字**：设置里的开关和分段选择，输入框下方的智能体、账号、权限和模型选择\n- **不可用的按钮会说明原因**：添加附件、压缩对话、安装智能体等按钮不可用时，鼠标停在上面能看到原因\n- **出错提示只说原因**，不再带一串 `Error invoking remote method…`\n- **关闭前先问**：关闭窗格或标签页时，有没保存的文件会先问；删除 API Key 前会先确认；删除类的确认按钮改成红色\n- **对话索引坏了不再打不开应用**：`index.sqlite` 读不出来时会放到一边，自动重建\n- **云端用量的费用按 Key 所在分组的倍率计算**，之前按账号的分组算\n\n### 修复\n\n- 对话：\n  - 发送失败时，输入框里的字和附件不再丢失\n  - 超过 2 万字的草稿，切换窗格后不再被截断\n  - 新开或打开一个对话，不再把正在看的文件或 SSH 终端的窗格换掉\n  - 听写时点「发送」，不再把话发出去后又写回输入框；现在是结束听写，再点一次才发送\n  - Claude Code 一个回合里调用了多轮模型时，用量不再只记最后一轮\n  - Claude Code 放到后台运行的命令，不再在回合结束时被标成出错\n  - 删除对话时刚好有消息发出，不再留下一个停不掉的回合\n  - 对话内查找（⌘F）不再跳过行首的匹配，也不再出现「3/2」这样的计数\n- 接管的对话：\n  - 被压缩过的 Claude Code 对话，接管后不再是空的，压缩之前的回合也能看到\n  - 接管的 Claude Code 回合，用量不再多算一倍多\n  - 很长的 Codex 对话，接管时读的是最近的 200 个回合，而不是最早的\n- 文件与代码：\n  - 「保存并关闭」在保存失败时不再把文件关掉\n  - 源代码管理：切换工作区后，上一个工作区的文件列表和报错不再盖到当前工作区上\n  - 远程文件：确认删除或重命名之前切换了文件夹，不再操作到别的文件上；确认框现在显示完整路径\n  - 选中补全项后紧接着输入的字不再被吞掉\n  - 悬停文档里的样式不再盖住整个窗口\n  - 没装 ripgrep 时的搜索，以及「全部替换」，遇到很慢的正则不再卡住整个应用：单个文件超过 300 毫秒就停下并提示\n  - 语言服务器连续崩溃后会停下来，直到你点「重启」\n- 群组：\n  - 主智能体同时派出两个任务时，不再超过并行上限\n  - 开工以后，主智能体再写的需求单不再替换你确认过的那一版\n  - 成员很快结束时，任务不再一直显示进行中\n- SSH：\n  - 已存的密码不再被填进动态口令、验证码和改密码的提示\n  - 智能体从服务器下载文件到本机，在「每次确认」的服务器上会先询问\n  - 经跳板机连接时，跳板机那一段出错不再引发未处理的错误\n- 插件与工具：\n  - 测试一个不停输出的 MCP 程序，不再卡住应用\n  - 仓库的 `mcp.json` 里有写错的字段时，面板不再整个打不开\n  - 在 Claude Code 里拒绝过的仓库 MCP 服务器，列出和导入时是停用的\n- 网络与更新：\n  - `NO_PROXY` 里的网段和 IPv6 地址现在生效\n  - 本机的 PAC 文件（`file://`）现在能读\n  - 更新下载失败后，不再一直停在「正在下载」\n- 控制另一台电脑时：\n  - 网络出口变化时，窗口不再被关掉\n  - 连接从中继换到局域网的瞬间，正在进行的操作不再失败\n  - 关闭窗口后，它开的终端会一起关掉，不再占着那个对话\n  - 只有那台电脑自己能做的事（远程访问的开关、配对、设备权限、重置、退出登录）显示为不可用并说明原因，不再点了才报错\n  - 智能体新开的网页，开在你正在用的那个窗口里\n  - 添加附件时就检查总大小，不再等到发送才失败\n  - 上传多个同名文件时不再漏传\n\n### 安全\n\n- 代理自动配置脚本（PAC）改在一个独立的、没有任何权限的进程里运行\n- 手机远程访问的文件边界收紧：受保护的文件夹不再能用大小写不同的写法绕过，查看差异、搜索、列出文件和 git 的还原操作都受同一条边界限制\n- 打开一个仓库时，仓库自己的 git 配置不会在读取时运行程序；仓库 `node_modules` 里的 YAML、Bash、Dockerfile 语言服务器要先经你同意才运行\n- 「启用」仓库里的 MCP 服务器，同意的是面板上列出的那一份；文件在这期间被改过就会拒绝\n- MCP 登录（OAuth）要求授权服务器的元数据带 `issuer`，不合规的服务器会连不上\n- Claude Code 审批卡上的「始终允许」只放行那一条命令或那个网站，不再放行同一个工具的所有调用\n\n### 说明\n\n- 这一版只更新电脑端，手机不需要更新\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.14",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.13/SkidSense-1.2.13-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.14/SkidSense-1.2.14-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.13/SkidSense-1.2.13-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.14/SkidSense-1.2.14-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.13/SkidSense-1.2.13-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.14/SkidSense-1.2.14-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.13/SkidSense-1.2.13-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.14/SkidSense-1.2.14-linux-x86_64.AppImage"
     }
   ]
 }
