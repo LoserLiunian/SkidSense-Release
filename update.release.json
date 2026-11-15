@@ -1,36 +1,36 @@
 {
-  "version": "1.2.15",
-  "published": "2026-11-15T01:22:05Z",
-  "notes": "这一版修复了智能体操作 SSH 服务器时拿不到结果的问题。\n\n### 修复\n\n- **智能体在 SSH 服务器上执行命令，现在能看到命令的输出**：之前只拿到退出码，stdout 和 stderr 都没有传给智能体\n- **智能体读取 SSH 服务器上的文件，现在能看到文件内容**：之前只拿到路径、etag 和行数，正文没有传过去\n- 列出主机、写入和修改文件、查看文件信息的结果，也改成和上面一样的完整文字说明\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.15",
+  "version": "1.2.16",
+  "published": "2026-11-15T19:05:09Z",
+  "notes": "这一版让应用安装的语言服务能提示新版本并一键更新，对话也会记住自己的模型、强度和权限。\n\n### 新功能\n\n- **语言服务有新版本时会提示，点一下就能更新**：在「设置 → 代码编辑 → 语言支持」里由应用安装的语言服务，之前只能等应用发新版才会更新。现在应用会在启动后、之后每 6 小时查一次新版本，也可以点「检查更新」马上查\n  - 有新版本时右下角提示一次，同一个版本不会重复提示\n  - 语言支持里对应的那一行会写明从哪个版本到哪个版本，可以单个「更新」，也可以「全部更新」\n  - 编辑器标题栏的语言服务菜单里也能直接更新\n  - 只提示，不会自动更新；你自己装的和仓库自带的语言服务不受影响\n\n### 改进\n\n- **对话会记住自己的模型、强度和权限**：之前这三样跟着窗格走，切到别的对话会被重置，权限还会带到下一个打开的对话上，重启后也不记得。现在跟着对话：切走再回来、重启之后都还在；从对话分支出来的新对话沿用原对话的选择\n- 模型菜单里的「其他账号 / 其他端点」，说明从「仅本窗格」改成「仅本对话」\n\n### 修复\n\n- **Kotlin 语言服务装上后无法启动**：之前内置的那一版已经过期。现在换成了新的一版；已经装过的，在语言支持里点「更新」\n\n### 说明\n\n- 更新语言服务时，正在用它的编辑器会断开一下再自动连上；更新失败或中途取消，原来的版本还在\n- 新版本直接向各语言服务的发布方查询。网络连不上 api.github.com 时，rust-analyzer、clangd 和 asm-lsp 的新版本暂时查不到，仍随应用更新\n- Java 的语言服务（Eclipse JDT LS）暂时仍只随应用更新\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.16",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.15/SkidSense-1.2.15-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.16/SkidSense-1.2.16-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.15/SkidSense-1.2.15-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.16/SkidSense-1.2.16-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.15/SkidSense-1.2.15-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.16/SkidSense-1.2.16-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.15/SkidSense-1.2.15-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.16/SkidSense-1.2.16-linux-x86_64.AppImage"
     }
   ]
 }
