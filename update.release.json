@@ -1,36 +1,36 @@
 {
-  "version": "1.2.16",
-  "published": "2026-11-15T19:05:09Z",
-  "notes": "这一版让应用安装的语言服务能提示新版本并一键更新，对话也会记住自己的模型、强度和权限。\n\n### 新功能\n\n- **语言服务有新版本时会提示，点一下就能更新**：在「设置 → 代码编辑 → 语言支持」里由应用安装的语言服务，之前只能等应用发新版才会更新。现在应用会在启动后、之后每 6 小时查一次新版本，也可以点「检查更新」马上查\n  - 有新版本时右下角提示一次，同一个版本不会重复提示\n  - 语言支持里对应的那一行会写明从哪个版本到哪个版本，可以单个「更新」，也可以「全部更新」\n  - 编辑器标题栏的语言服务菜单里也能直接更新\n  - 只提示，不会自动更新；你自己装的和仓库自带的语言服务不受影响\n\n### 改进\n\n- **对话会记住自己的模型、强度和权限**：之前这三样跟着窗格走，切到别的对话会被重置，权限还会带到下一个打开的对话上，重启后也不记得。现在跟着对话：切走再回来、重启之后都还在；从对话分支出来的新对话沿用原对话的选择\n- 模型菜单里的「其他账号 / 其他端点」，说明从「仅本窗格」改成「仅本对话」\n\n### 修复\n\n- **Kotlin 语言服务装上后无法启动**：之前内置的那一版已经过期。现在换成了新的一版；已经装过的，在语言支持里点「更新」\n\n### 说明\n\n- 更新语言服务时，正在用它的编辑器会断开一下再自动连上；更新失败或中途取消，原来的版本还在\n- 新版本直接向各语言服务的发布方查询。网络连不上 api.github.com 时，rust-analyzer、clangd 和 asm-lsp 的新版本暂时查不到，仍随应用更新\n- Java 的语言服务（Eclipse JDT LS）暂时仍只随应用更新\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.16",
+  "version": "1.2.17",
+  "published": "2026-11-16T20:45:36Z",
+  "notes": "这一版新增纯黑模式和 Codex 的「自动」权限，对话会跟着智能体改的标题走，并修了几处审批和模型映射上的问题。\n\n### 新功能\n\n- **纯黑模式**：在「设置 → 外观」的「主题」下面。打开后，深色下对话、文件和终端的背景是纯黑，侧栏、标题栏和卡片也比原来更黑，但和对话区留着一档区别\n  - 只在深色下生效，「跟随系统」切到深色时也算；浅色下不受影响\n  - 文字、状态色和代码高亮的颜色不变\n- **Codex 有了「自动」权限**：工作区里的操作照旧不问；要越出工作区沙箱时，由 Codex 自己审一遍再决定放行还是拒绝，不来问你\n  - 审批结果写在那一步的卡片上：放行还是拒绝、风险高低、理由\n  - 被拒的操作不会执行；拒绝太多时 Codex 会结束这一回合\n  - Codex 的新对话仍然默认「沙箱内自动」，「自动」要自己选\n- **对话标题跟着智能体走**：在终端里用 `/rename` 改了名，或智能体自己给对话起了名，这边的对话标题会跟着变\n  - 你自己改过名的对话不会被覆盖\n  - 只在对话里聊天时，Claude Code 不会自己起名，标题仍是第一条消息的开头\n\n### 修复\n\n- **正在运行的对话出现在「可接管」里**：新对话的第一个回合还在跑时，它自己会被列进「可接管 · 智能体自己的记录」，接管后会变成两个对话共用一份记录。现在应用自己的对话不会再出现在那里\n- **Codex 在「每次询问」「沙箱内自动」下可能不来问你**：如果你的 Codex `config.toml` 里开了自动审批（`approvals_reviewer = \"auto_review\"`），之前这两种权限下 Codex 也会自己批准。现在只有选了「自动」才由它自己审批\n- **Claude Code「自动」权限用错了判断模型**：走云端或自己的端点时，判断该不该放行的那次请求之前发给 Sonnet 档的模型，账号把 Sonnet 映射到别的模型时就不是你选的那个。现在固定用这一回合的模型\n- **别处配的 Fable 模型被带到当前端点**：系统环境变量里为别的端点配的 `ANTHROPIC_DEFAULT_FABLE_MODEL`，之前会原样发到应用为你选的端点上。现在会清掉；账号的模型映射里新增了 Fable 一栏，需要时在那里填\n\n### 说明\n\n- 「自动」权限的说明改了：走云端或自己的端点时，判断是再调一次模型来做的，可靠程度取决于这个模型，这些额外的请求也计入用量。判断模型答不上来时回合不会停：Claude Code 连着被拦到第三步会改为来问你\n- 手机端暂时还看不到「自动」这一项，也不认识模型映射里的 Fable 一栏：在手机上保存一次账号，电脑上填的 Fable 映射会被清掉\n- 纯黑模式下，图表仍用原来的深色配色\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.2.17",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.16/SkidSense-1.2.16-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.17/SkidSense-1.2.17-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.16/SkidSense-1.2.16-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.17/SkidSense-1.2.17-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.16/SkidSense-1.2.16-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.17/SkidSense-1.2.17-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.16/SkidSense-1.2.16-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.2.17/SkidSense-1.2.17-linux-x86_64.AppImage"
     }
   ]
 }
