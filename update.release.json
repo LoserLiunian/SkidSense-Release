@@ -1,36 +1,36 @@
 {
-  "version": "1.3.2",
-  "published": "2026-11-20T14:44:39Z",
-  "notes": "## 协作成员\n\n- **席位**：每台电脑可以有 5 位协作成员（含管理员）和 2 位观察成员。\n- **按邮箱邀请先核对账号**：对方的邮箱还没注册 SkidSense 时，不会发出邀请邮件，并提示「受邀人需要先注册为 SkidSense 用户」。\n- **邀请链接可以在浏览器里打开**：以前打开是 404，现在会显示邀请页面。没登录时可以先登录或注册，登录后能看到是谁的电脑、什么身份，并直接填写申请理由提交。\n- **在任何一台电脑上都能加入**：申请通过后，成员在哪台电脑上登录 SkidSense，那台电脑都能连到发起协作的人的电脑，每人最多 10 台。主人在「设置 › 成员」里能看到每位成员用了哪几台电脑；移出成员时，他的所有电脑一起失去访问。\n\n## 分享对话\n\n- **工具调用不再截断**：选择「包含工具的输入与输出」时，每次调用的内容完整带上，不再在 8000 字处截断。单轮的上限从 1 MiB 提高到 3 MiB，只有超过这个大小的一轮才会被压缩，而且先压缩工具内容。\n- **分享窗口更简洁**：\n  - 「撤回」改为复制、打开按钮右边的红色垃圾桶图标，点了仍会让你再确认一次。\n  - 「谁能看」和「可用时间」收进垃圾桶左边的设置按钮，点开后在弹出的卡片里修改，不再平铺在列表里。\n\n> 浏览器加入、多台电脑加入和席位设置需要服务端同步更新后才能使用。\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.3.2",
+  "version": "1.3.3",
+  "published": "2026-11-21T00:18:18Z",
+  "notes": "## 助手\n\n- **预置助手可以改名、删除了**：Skid Bot、产品研发、客服、内容运营、财务这五个预置助手，现在和你自己建的一样，名字、职责、智能体、模型、审批方式都能改，也能删除（删除前会先确认）。\n- **恢复预置助手**：删掉的预置助手不会自己回来。要找回时，在「设置 › 助手」右上角点「恢复预置助手」，会按最初的样子加回来；如果名字已被别的助手占用，会在后面加上「（预置）」。\n- **Skid Bot 改名后仍是协调者**：改了名字，它照样只负责分配工作、自己不动手。删掉它以后，和它的私信不再置顶。\n- **新增「简介」**：每个助手可以写一句简介，显示在「设置 › 助手」和「消息」列表里的名字下面。别的助手（尤其是协调者）挑人时也会读这句，写清楚分工会更准。预置助手自带简介，不写的话显示职责的第一行。\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.3.3",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.2/SkidSense-1.3.2-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.3/SkidSense-1.3.3-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.2/SkidSense-1.3.2-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.3/SkidSense-1.3.3-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.2/SkidSense-1.3.2-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.3/SkidSense-1.3.3-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.2/SkidSense-1.3.2-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.3/SkidSense-1.3.3-linux-x86_64.AppImage"
     }
   ]
 }
