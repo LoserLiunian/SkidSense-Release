@@ -1,36 +1,36 @@
 {
-  "version": "1.3.3",
-  "published": "2026-11-21T00:18:18Z",
-  "notes": "## 助手\n\n- **预置助手可以改名、删除了**：Skid Bot、产品研发、客服、内容运营、财务这五个预置助手，现在和你自己建的一样，名字、职责、智能体、模型、审批方式都能改，也能删除（删除前会先确认）。\n- **恢复预置助手**：删掉的预置助手不会自己回来。要找回时，在「设置 › 助手」右上角点「恢复预置助手」，会按最初的样子加回来；如果名字已被别的助手占用，会在后面加上「（预置）」。\n- **Skid Bot 改名后仍是协调者**：改了名字，它照样只负责分配工作、自己不动手。删掉它以后，和它的私信不再置顶。\n- **新增「简介」**：每个助手可以写一句简介，显示在「设置 › 助手」和「消息」列表里的名字下面。别的助手（尤其是协调者）挑人时也会读这句，写清楚分工会更准。预置助手自带简介，不写的话显示职责的第一行。\n",
-  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.3.3",
+  "version": "1.3.4",
+  "published": "2026-11-24T23:48:38Z",
+  "notes": "## 官方账号\n\n- **模型列表跟着账号走**：给 Claude Code 或 Codex 选了官方账号后，模型菜单列出的是这个账号自己能用的模型，由 CLI 直接告诉我们，不调用模型、不计费。比如 Claude 账号的 Fable 会是这个账号实际在用的版本（可能是 1M 上下文的），每个模型能用的思考强度也照账号的来。切换账号或打开「共享你的配置与记录」后会重新读取。\n- **`/` 菜单也是这个账号的**：选了官方账号后，`/` 菜单里的命令和技能来自这个账号的目录。以前会用你自己的配置启动 Claude Code 来读菜单，这会顺带用你本人的登录访问 Anthropic；现在不会了。\n- **和直接用 CLI 时一样**：用官方账号跑的回合和终端，不再让 CLI 关掉它自己的使用统计，它发给厂商的请求和你在终端里直接运行时一致。跟随 CLI 配置和自定义端点的线路保持不变。\n",
+  "releasePage": "https://github.com/LoserLiunian/SkidSense-Release/releases/tag/v1.3.4",
   "downloads": [
     {
       "platform": "mac-arm64",
       "label": "macOS（Apple 芯片）",
       "os": "mac",
       "arch": "arm64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.3/SkidSense-1.3.3-mac-arm64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.4/SkidSense-1.3.4-mac-arm64.dmg"
     },
     {
       "platform": "mac-x64",
       "label": "macOS（Intel）",
       "os": "mac",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.3/SkidSense-1.3.3-mac-x64.dmg"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.4/SkidSense-1.3.4-mac-x64.dmg"
     },
     {
       "platform": "win-x64",
       "label": "Windows（x64）",
       "os": "windows",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.3/SkidSense-1.3.3-win-x64.exe"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.4/SkidSense-1.3.4-win-x64.exe"
     },
     {
       "platform": "linux-x64",
       "label": "Linux（AppImage）",
       "os": "linux",
       "arch": "x64",
-      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.3/SkidSense-1.3.3-linux-x86_64.AppImage"
+      "url": "https://github.com/LoserLiunian/SkidSense-Release/releases/download/v1.3.4/SkidSense-1.3.4-linux-x86_64.AppImage"
     }
   ]
 }
